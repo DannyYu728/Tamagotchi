@@ -46,29 +46,29 @@ const memoryModal = document.querySelector(".memoryModal")
 //   }
 // }
 
-
-let createCards = (arr) => {
-    arr.forEach((imgCard) => {
-      let htmlTemplate = `
-        <div class ="card">
-        <img class ="imageCard" src ="${imgCard.image}">
-        </div>`
-      memoryModal.insertAdjacentHTML("beforeend", htmlTemplate)
-    })
-  let cards = document.querySelectorAll(".card")
-  console.log(cards)
-    for (let i = 20; i > 0; i--) {
-      let randomGeneratedIndex = Math.floor(Math.random() * 8);
-      let randomGeneratedIndex2 = Math.floor(Math.random() * 8);
-      let tempSavedItem = cards[randomGeneratedIndex];
-      cards[randomGeneratedIndex] = cards[randomGeneratedIndex2];
-      cards[randomGeneratedIndex2] = tempSavedItem;
-    }
-    // let cards = document.querySelectorAll(".card")
-    cards.forEach((card, index) => card.addEventListener("click", function () {
-      console.log("hi")
-    }))
+let shuffle = (arr) => {
+  let i = arr.length;
+  while (--i > 0) {
+    let temp = Math.floor(Math.random() * (i + 1));
+    [arr[temp], arr[i]] = [arr[i], arr[temp]]
   }
+  return arr
+}
+
+// let createCards = (arr) => {
+  // console.log(arr)
+  // arr.forEach((imgCard) => {
+  //   let htmlTemplate = `
+  //     <div class ="card">
+  //     <img class ="imageCard" src ="${imgCard.image}">
+  //     </div>`
+  //   memoryModal.insertAdjacentHTML("beforeend", htmlTemplate)
+  // })
+  // let cards = document.querySelectorAll(".card")
+    // cards.forEach((card, index) => card.addEventListener("click", function () {
+      // console.log("hi")
+    // }))
+  // }
 
 
 async function fetchie() {
@@ -78,8 +78,10 @@ async function fetchie() {
   let randomCut = Math.floor(Math.random() * 11)
   let eightCuts = imageArray.slice(randomCut, randomCut + 8);
   let cuts2 = eightCuts.concat(eightCuts)
-  createCards(cuts2)
   console.log(cuts2)
+  let newarray = shuffle(cuts2)
+  // createCards(newarray)
+   console.log('newarray', newarray)
 }
 
 fetchie()
@@ -91,4 +93,3 @@ fetchie()
 
 // Generate an Array with each element x2
 // randomize and print it as cards
-
