@@ -42,37 +42,65 @@ const boss = document.querySelector(".boss")
 document.addEventListener('keydown', e => {
   if (0 < cat.offsetLeft) {
     if (e.code === 'KeyA') {
-      cat.style.left = `${(cat.offsetLeft) - 50}px`;
-      console.log(cat.offsetLeft)
+      // cat.style.left = `${(cat.offsetLeft) - 50}px`;
+      cat.style.left = `${0}px`;
     }
   }
 })
 document.addEventListener('keydown', e => {
   if (500 > cat.offsetLeft) {
     if (e.code === 'KeyD') {
-      cat.style.left = `${(cat.offsetLeft) + 50}px`;
+      // cat.style.left = `${(cat.offsetLeft) + 50}px`;
+      cat.style.left = `${450}px`;
     }
   }
 })
 
-let laser = document.createElement("div")
-let createLaser = () => {
-  laser.classList.add("laser")
-  cat.appendChild(laser)
-  laser.style.top = '0px'
+
+let catLaser = document.createElement("div")
+let createCatLaser = () => {
+  catLaser.classList.add("catLaser")
+  cat.appendChild(catLaser)
+  catLaser.style.top = '0px'
 }
 
 document.addEventListener('keydown', e => {
   if (e.code === 'Space') {
-    createLaser()
+    createCatLaser()
   }
 })
-let movelaser = () => {
-  laser.style.top = `-${gameModal.offsetHeight}px`;
+let moveCatLaser = () => {
+  catLaser.style.top = `-${gameModal.offsetHeight}px`;
 }
-setInterval(movelaser, 1000)
+setInterval(moveCatLaser, 1000)
+
+let bossLaser = document.createElement("div")
+let createBossLaser = () => {
+  bossLaser.classList.add("bossLaser")
+  boss.appendChild(bossLaser)
+  bossLaser.style.top = '0px'
+}
+setInterval(createBossLaser, 1000)
+
+let moveBossLaser = () => {
+  bossLaser.style.top = `${gameModal.offsetHeight}px`;
+}
+setInterval(moveBossLaser, 1000)
 
 let moveBoss = () => {
   boss.style.left = `${Math.floor(Math.random() * 500)}px`;
 }
 setInterval(moveBoss, 2000)
+
+class catShip {
+  constructor() {
+    this.cat = document.createElement('img')
+    this.cat.src = "https://64.media.tumblr.com/692589ab5105831fd3e3897553979fc4/tumblr_npyi0xoh601tl2vzco1_500.gifv"
+    document.body.appendChild(this.cat)
+    this.cat.className = 'cat'
+  }
+}
+
+let kitty = new catShip()
+
+

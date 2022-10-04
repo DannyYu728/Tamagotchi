@@ -16,35 +16,45 @@ html {
 
 .boss {
   position: absolute;
-  transition: left 1s;
+  transition: left 2s;
   transition-timing-function: linear;
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   left: 200px;
-  top: 200px;
+  top: 150px;
   background-color: red;
 }
 
 .cat {
-  position: absolute;
-  border-radius:50%;
-  transition: left 0.5s;
-  transition-timing-function: linear;
+  position: fixed;
+  /* border-radius:50%; */
+  /* transition: left 2s; */
+  /* transition-timing-function: linear; */
   width: 50px;
   height: 50px;
   left: 200px;
-  top: 550px;
-  background-color: blue;
+  top: 650px;
+  /* background-color: blue; */
 }
 
-.laser {
+.catLaser {
   width: 10px;
   height: 20px;
-  background-color: red;
+  background-color: blue;
   border-radius: 50%;
   position: absolute;
   /* background-position: -100px -160px; */
   transition: top 1s;
   transition-timing-function: linear;
   /* background-repeat: no-repeat; */
+}
+
+.bossLaser {
+  width: 10px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  position: absolute;
+  transition: top 1s;
+  transition-timing-function: linear;
 }
