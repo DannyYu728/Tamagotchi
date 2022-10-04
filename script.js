@@ -1,5 +1,6 @@
-const ramUrl = 'https://rickandmortyapi.com/api/'
-const memoryModal = document.querySelector(".memoryModal")
+const gameModal = document.querySelector(".gameModal")
+const cat = document.querySelector(".cat")
+const boss = document.querySelector(".boss")
 // let healthMeter = 100
 // let hungryMeter = 100
 // let happyMeter = 100
@@ -38,58 +39,40 @@ const memoryModal = document.querySelector(".memoryModal")
 //   }
 // }
 
-
-// class Card {
-//   constructor(shape, values) {
-//     this.shape = shape;
-//     this.values = values;
-//   }
-// }
-
-let shuffle = (arr) => {
-  let i = arr.length;
-  while (--i > 0) {
-    let temp = Math.floor(Math.random() * (i + 1));
-    [arr[temp], arr[i]] = [arr[i], arr[temp]]
+document.addEventListener('keydown', e => {
+  if (0 < cat.offsetLeft) {
+    if (e.code === 'KeyA') {
+      cat.style.left = `${(cat.offsetLeft) - 50}px`;
+      console.log(cat.offsetLeft)
+    }
   }
-  return arr
+})
+document.addEventListener('keydown', e => {
+  if (500 > cat.offsetLeft) {
+    if (e.code === 'KeyD') {
+      cat.style.left = `${(cat.offsetLeft) + 50}px`;
+    }
+  }
+})
+
+let laser = document.createElement("div")
+let createLaser = () => {
+  laser.classList.add("laser")
+  cat.appendChild(laser)
+  laser.style.top = '0px'
 }
 
-// let createCards = (arr) => {
-  // console.log(arr)
-  // arr.forEach((imgCard) => {
-  //   let htmlTemplate = `
-  //     <div class ="card">
-  //     <img class ="imageCard" src ="${imgCard.image}">
-  //     </div>`
-  //   memoryModal.insertAdjacentHTML("beforeend", htmlTemplate)
-  // })
-  // let cards = document.querySelectorAll(".card")
-    // cards.forEach((card, index) => card.addEventListener("click", function () {
-      // console.log("hi")
-    // }))
-  // }
-
-
-async function fetchie() {
-  let randomPage = Math.floor(Math.random() * 20)
-  let response = await axios(ramUrl + `character?page=${randomPage}`)
-  let imageArray = response.data.results
-  let randomCut = Math.floor(Math.random() * 11)
-  let eightCuts = imageArray.slice(randomCut, randomCut + 8);
-  let cuts2 = eightCuts.concat(eightCuts)
-  console.log(cuts2)
-  let newarray = shuffle(cuts2)
-  // createCards(newarray)
-   console.log('newarray', newarray)
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') {
+    createLaser()
+  }
+})
+let movelaser = () => {
+  laser.style.top = `-${gameModal.offsetHeight}px`;
 }
+setInterval(movelaser, 1000)
 
-fetchie()
-
-// let memoryGame = () => [
-//   apple += 1
-// ]
-
-
-// Generate an Array with each element x2
-// randomize and print it as cards
+let moveBoss = () => {
+  boss.style.left = `${Math.floor(Math.random() * 500)}px`;
+}
+setInterval(moveBoss, 2000)
