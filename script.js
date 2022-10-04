@@ -1,6 +1,9 @@
 // const gameModal = document.querySelector(".gameModal")
 // const cat = document.querySelector(".cat")
 // const boss = document.querySelector(".boss")
+const catImage = "https://www.icegif.com/wp-content/uploads/nyan-cat-icegif-13.gif"
+const boo = "https://66.media.tumblr.com/06ad37efe01d51ffc2f58363fe989653/tumblr_my74o3mTMV1rfjowdo1_500.gif"
+const sheep = "https://64.media.tumblr.com/bc0b793c5949fbf57dc342422da1da28/tumblr_mmxhwa7Bmz1rfjowdo1_500.gif"
 // let healthMeter = 100
 // let hungryMeter = 100
 // let happyMeter = 100
@@ -39,11 +42,11 @@
 //   }
 // }
 
-class template  {
-  constructor({tag = 'div', className = ''} = {}) {
+class template {
+  constructor({ tag = 'div', className = '' } = {}) {
     this.element = document.createElement(tag);
     document.body.appendChild(this.element);
-    this.element.className = `template` + className;
+    this.element.className = 'template ' + className;
   }
   setX(x) {
     this.x = x;
@@ -53,26 +56,14 @@ class template  {
     this.y = y;
     this.element.style.top = `${this.y}px`;
   }
-
 }
-
-class catShip extends template {
+class CatShip extends template {
   constructor() {
-    this.element = document.createElement('img');
-    this.element.src = "https://64.media.tumblr.com/692589ab5105831fd3e3897553979fc4/tumblr_npyi0xoh601tl2vzco1_500.gifv";
-    document.body.appendChild(this.element);
-    this.element.className = 'cat';
+    super({ tag: 'img', className: 'cat' });
+    this.element.src = catImage;
     this.setX(window.innerWidth / 2);
     this.setY(window.innerHeight - 100);
     this.fireRate = true
-  }
-  setX(x) {
-    this.x = x;
-    this.element.style.left = `${this.x}px`;
-  }
-  setY(y) {
-    this.y = y;
-    this.element.style.top = `${this.y}px`;
   }
   moveLeft() {
     this.setX(this.x - 5)
@@ -84,7 +75,7 @@ class catShip extends template {
     if (this.fireRate) {
       this.fireRate = false
       fireLaser({
-        x: kitty.x + 25,
+        x: kitty.x + 15,   
         y: kitty.y,
       })
       setTimeout(() => {
@@ -93,22 +84,12 @@ class catShip extends template {
     }
   }
 }
-
-class catLaser {
+class CatLaser extends template {
   constructor({ x, y }) {
-    this.element = document.createElement('div');
-    document.body.appendChild(this.element);
-    this.element.className = 'catLaser';
+    super({ tag: 'img', className: 'catLaser' })
+    this.element.src = sheep;
     this.setX(x);
     this.setY(y);
-  }
-  setX(x) {
-    this.x = x;
-    this.element.style.left = `${this.x}px`;
-  }
-  setY(y) {
-    this.y = y;
-    this.element.style.top = `${this.y}px`;
   }
   updateUp() {
     this.setY(this.y - 5);
@@ -118,11 +99,37 @@ class catLaser {
     this.element = null;
   }
 }
-const kitty = new catShip()
+class Monster extends template {
+  constructor({ x, y }) {
+    super({ tag: 'img', className: 'monster' })
+    this.element.src = boo;
+    this.setX(x);
+    this.setY(y);
+  }
+}
+
+
+
+
+
+
+const spaceMons = []
+for (let r = 0; r < 3; r++){
+  for (let c = 0; c < 6; c++) {
+    const spaceMon = new Monster({
+      x: c * 100 + 350,
+      y: r * 50 + 50.
+    });
+    spaceMons.push(spaceMon);
+  }
+}
+
+
+const kitty = new CatShip()
 const lasers = []
 const fireLaser = ({ x, y }) => {
   lasers.push(
-    new catLaser({
+    new CatLaser({
       x,
       y,
     }))
