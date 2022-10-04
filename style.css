@@ -7,49 +7,30 @@ html {
   margin: 0;
 }
 
-.gameModal {
-  display: flex;
-  width: 500px;
-  height: 600px;
-  background-color: burlywood;
-}
-
-.boss {
-  position: absolute;
-  transition: left 2s;
-  transition-timing-function: linear;
-  width: 100px;
-  height: 100px;
-  left: 200px;
-  top: 150px;
-  background-color: red;
+.template {
+  position: fixed;
 }
 
 .cat {
   position: fixed;
-  /* border-radius:50%; */
-  /* transition: left 2s; */
-  /* transition-timing-function: linear; */
+  transform: rotate(-90deg);
   width: 50px;
   height: 50px;
-  left: 200px;
-  top: 650px;
-  /* background-color: blue; */
 }
 
 .catLaser {
+  position: fixed;
   width: 10px;
   height: 20px;
   background-color: blue;
-  border-radius: 50%;
-  position: absolute;
-  /* background-position: -100px -160px; */
+  /* border-radius: 50%; */
+  /* background-position: -100px -160px;
   transition: top 1s;
   transition-timing-function: linear;
-  /* background-repeat: no-repeat; */
+  background-repeat: no-repeat; */
 }
 
-.bossLaser {
+/* .bossLaser {
   width: 10px;
   height: 20px;
   background-color: red;
@@ -57,4 +38,4 @@ html {
   position: absolute;
   transition: top 1s;
   transition-timing-function: linear;
-}
+} */
