@@ -100,9 +100,9 @@ class CatShip extends template {
 //Cat Laser
 class CatLaser extends template {
   constructor({ x, y }) {
-    super({ className: 'catLaser' })
-    // super({ tag: 'img', className: 'catLaser' })
-    // this.element.src = sheep;
+    // super({ className: 'catLaser' })
+    super({ tag: 'img', className: 'catLaser' })
+    this.element.src = sheep;
     this.setX(x);
     this.setY(y);
   }
@@ -140,11 +140,10 @@ class Monster extends template {
   }
   update() {
     if (this.direction === 'left') {
-      this.setX(this.x - 5)
+      this.setX(this.x - 1)
     } else {
-      this.setX(this.x + 5)
+      this.setX(this.x + 1)
     }
-
     const laser = this.hitDetection(this);
     if (laser) {
       this.removeMon(this.element)
@@ -163,13 +162,15 @@ const fireLaser = ({ x, y }) => {
     }))
 }
 const removeMon = (spaceMon) => {
-  spaceMons.splice(spaceMons.indexOf(spaceMon), 1);
-  spaceMon.remove();
+  spaceMon.remove();     
+  spaceMonsGrid.splice(spaceMonsGrid.indexOf(spaceMon), 1);
+  spaceMon = null;
 }
 
 const removeLaser = (laser) => {
-  lasers.splice(lasers.indexOf(laser), 1);
   laser.remove();
+  lasers.splice(lasers.indexOf(laser), 1);
+  laser = null
 }
 
 const isHit = (object1, object2) => {
@@ -193,7 +194,9 @@ const hitDetection = (object) => {
 
 
 const spaceMons = []
+const spaceMonsGrid = []
 for (let r = 0; r < 3; r++) {
+  const spaceMonsC = []
   for (let c = 0; c < 6; c++) {
     const spaceMon = new Monster({
       x: c * 100 + 350,
@@ -203,8 +206,25 @@ for (let r = 0; r < 3; r++) {
       removeLaser,
     });
     spaceMons.push(spaceMon);
+    spaceMonsC.push(spaceMon);
   }
+  spaceMonsGrid.push(spaceMonsC)
+  console.log(spaceMonsGrid)
 }
+
+// const getBotMon = () => {
+//   const botMons = [];
+//   for (let c = 0; c < 6; c++) {
+//     for (let r = 2; r >= 0; r--) {
+//       if (spaceMonsGrid[r][c]) {
+//         botMons.push(spaceMonsGrid[r][c]);
+//         break;
+//       }
+//     }
+//   }
+//   return botMons
+// }
+
 const getLeftMon = () => {
   return spaceMons.reduce((minSpaceMon, currentspaceMon) => {
     return currentspaceMon.x < minSpaceMon.x
