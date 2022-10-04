@@ -41,6 +41,18 @@ const sheep = "https://64.media.tumblr.com/bc0b793c5949fbf57dc342422da1da28/tumb
 //     console.log("Apple Basket is full")
 //   }
 // }
+//-----------------Keys-------------------------
+const keys = {
+  a: false,
+  d: false,
+  [' ']: false,
+}
+document.addEventListener('keydown', e => {
+  keys[e.key] = true;
+})
+document.addEventListener('keyup', e => {
+  keys[e.key] = false;
+})
 //----------------------Class----------------------------
 class template {
   constructor({ tag = 'div', className = '' } = {}) {
@@ -57,6 +69,7 @@ class template {
     this.element.style.top = `${this.y}px`;
   }
 }
+// CatShip
 class CatShip extends template {
   constructor() {
     super({ tag: 'img', className: 'cat' });
@@ -84,10 +97,12 @@ class CatShip extends template {
     }
   }
 }
+//Cat Laser
 class CatLaser extends template {
   constructor({ x, y }) {
-    super({ tag: 'img', className: 'catLaser' })
-    this.element.src = sheep;
+    super({ className: 'catLaser' })
+    // super({ tag: 'img', className: 'catLaser' })
+    // this.element.src = sheep;
     this.setX(x);
     this.setY(y);
   }
@@ -99,13 +114,20 @@ class CatLaser extends template {
     this.element = null;
   }
 }
+// Boo
 class Monster extends template {
-  constructor({ x, y }) {
-    super({ tag: 'img', className: 'monster' })
+  constructor({ x, y, hitDetection, removeMon, removeLaser }) {
+    super({ tag: 'img', className: 'monster' });
     this.element.src = boo;
+    this.direction = 'left';
+
+    this.hitDetection = hitDetection;
+    this.removeMon = removeMon
+    this.removeLaser = removeLaser
+
+
     this.setX(x);
     this.setY(y);
-    this.direction = 'left'
   }
   setDirectionLeft() {
     this.direction = 'left'
@@ -122,21 +144,67 @@ class Monster extends template {
     } else {
       this.setX(this.x + 5)
     }
+
+    const laser = this.hitDetection(this);
+    if (laser) {
+      this.removeMon(this.element)
+      this.removeLaser(laser)
+    }
   }
 }
-//-----------------------Monsters--------------------------------//
-//Create Monster
+//-----------------------Game Functions--------------------------------//
+const kitty = new CatShip()
+const lasers = []
+const fireLaser = ({ x, y }) => {
+  lasers.push(
+    new CatLaser({
+      x,
+      y,
+    }))
+}
+const removeMon = (spaceMon) => {
+  spaceMons.splice(spaceMons.indexOf(spaceMon), 1);
+  spaceMon.remove();
+}
+
+const removeLaser = (laser) => {
+  lasers.splice(lasers.indexOf(laser), 1);
+  laser.remove();
+}
+
+const isHit = (object1, object2) => {
+  const rect1 = object1.element.getBoundingClientRect();
+  const rect2 = object2.element.getBoundingClientRect();
+  return !(
+    rect1.right < rect2.left ||
+    rect1.left > rect2.right ||
+    rect1.bottom < rect2.top ||
+    rect1.top > rect2.bottom)
+}
+
+const hitDetection = (object) => {
+  for (let laser of lasers) {
+    if (isHit(object, laser)) {
+      return laser
+    }
+  }
+  return null;
+}
+
+
 const spaceMons = []
 for (let r = 0; r < 3; r++) {
   for (let c = 0; c < 6; c++) {
     const spaceMon = new Monster({
       x: c * 100 + 350,
-      y: r * 50 + 50.
+      y: r * 50 + 50,
+      hitDetection,
+      removeMon,
+      removeLaser,
     });
     spaceMons.push(spaceMon);
   }
 }
-//-----------------Monster Movement--------------------
 const getLeftMon = () => {
   return spaceMons.reduce((minSpaceMon, currentspaceMon) => {
     return currentspaceMon.x < minSpaceMon.x
@@ -149,28 +217,6 @@ const getRightMon = () => {
       ? currentspaceMon : maxSpaceMon;
   })
 }
-//------------------Cat----------------------------
-const kitty = new CatShip()
-const lasers = []
-const fireLaser = ({ x, y }) => {
-  lasers.push(
-    new CatLaser({
-      x,
-      y,
-    }))
-}
-//-----------------Keys-------------------------
-const keys = {
-  a: false,
-  d: false,
-  [' ']: false,
-}
-document.addEventListener('keydown', e => {
-  keys[e.key] = true;
-})
-document.addEventListener('keyup', e => {
-  keys[e.key] = false;
-})
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
