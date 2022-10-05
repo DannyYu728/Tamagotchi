@@ -73,13 +73,15 @@ class template {
 }
 // CatShip
 class CatShip extends template {
-  constructor() {
+  constructor({ lifeTracker, hitDetection, removeLaser }) {
     super({ tag: 'img', className: 'cat' });
     this.element.src = catImage;
     this.setX(window.innerWidth / 2);
     this.setY(window.innerHeight - 100);
     this.fireRate = true
-    // this.removeCat = this.removeCat
+    this.lifeTracker = lifeTracker
+    this.hitDetection = hitDetection
+    this.removeLaser = removeLaser
   }
   moveLeft() {
     this.setX(this.x - 5)
@@ -99,13 +101,13 @@ class CatShip extends template {
       }, 500)
     }
   }
-  // update() {
-  //   const laser = this.hitDetection(this);
-  //   if (laser) {
-  //     this.removeCat(this.element)
-  //     this.removeLaser(laser)
-  //   }
-  // }
+  update() {
+    const laser = this.hitDetection(this);
+    if (laser && laser.isMon) {
+      this.lifeTracker()
+      this.removeLaser(laser)
+    }
+  }
 }
 //------------------------Cat Laser--------------------------
 class CatLaser extends template {
@@ -177,10 +179,7 @@ let score = 0
 let life = 3
 const booRow = 3
 const booCol = 6
-const kitty = new CatShip({
-    // removeLaser,
-    // hitDetection,
-})
+
 
 const lasers = []
 const spaceMons = []
@@ -192,7 +191,7 @@ const addtoScore = (amount) => {
 }
 
 const lifeTracker = () => {
-  life --;
+  life--;
   lifeBox.textContent = life;
 }
 
@@ -207,7 +206,7 @@ const fireLaser = ({ x, y, isMon = false }) => {
 const removeMon = (spaceMon) => {
   // console.log(spaceMonsGrid)
   spaceMons.slice(spaceMons.indexOf(spaceMon), 1);
-  spaceMon.remove();     
+  spaceMon.remove();
 }
 
 const removeLaser = (laser) => {
@@ -233,6 +232,12 @@ const hitDetection = (object) => {
   }
   return null;
 }
+
+const kitty = new CatShip({
+  removeLaser,
+  hitDetection,
+  lifeTracker
+})
 
 for (let r = 0; r < booRow; r++) {
   const spaceMonsC = []
@@ -307,6 +312,8 @@ const update = () => {
       fireLaser
     })
   }
+  kitty.update()
+
   lasers.forEach(laser => {
     laser.update();
     if (laser.y < 0) {
