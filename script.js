@@ -6,10 +6,10 @@ const lifeBox = document.querySelector(".life")
 const catImage = "https://www.icegif.com/wp-content/uploads/nyan-cat-icegif-13.gif"
 const boo = "https://66.media.tumblr.com/06ad37efe01d51ffc2f58363fe989653/tumblr_my74o3mTMV1rfjowdo1_500.gif"
 const sheep = "https://64.media.tumblr.com/bc0b793c5949fbf57dc342422da1da28/tumblr_mmxhwa7Bmz1rfjowdo1_500.gif"
-// let healthMeter = 100
-// let hungryMeter = 100
-// let happyMeter = 100
-// let apple = 5
+let healthMeter = 100
+let hungryMeter = 100
+let happyMeter = 100
+let apple = 5
 
 // let sleep = () => {
 //   healthMeter += 25
@@ -36,13 +36,6 @@ const sheep = "https://64.media.tumblr.com/bc0b793c5949fbf57dc342422da1da28/tumb
 //   }
 // }
 
-// let gainApple = () => {
-//   if (apple < 5) {
-//     memoryGame()
-//   } else {
-//     console.log("Apple Basket is full")
-//   }
-// }
 //-----------------Keys-------------------------
 const keys = {
   a: false,
@@ -112,7 +105,6 @@ class CatShip extends template {
 //------------------------Cat Laser--------------------------
 class CatLaser extends template {
   constructor({ x, y, isMon }) {
-    // super({ className: 'catLaser' })
     super({ tag: 'img', className: 'catLaser' })
     this.element.src = sheep;
     this.setX(x);
@@ -162,16 +154,20 @@ class Monster extends template {
   }
   update() {
     if (this.direction === 'left') {
-      this.setX(this.x - 1)
+      this.setX(this.x - 5)
     } else {
-      this.setX(this.x + 1)
+      this.setX(this.x + 5)
     }
     const laser = this.hitDetection(this);
     if (laser && !laser.isMon) {
       this.removeMon(this.element)
       this.removeLaser(laser)
-      this.addtoScore(10)
+      this.addtoScore(1)
     }
+  }
+  remove() {
+    this.element.remove();
+    this.element = null;
   }
 }
 //-----------------------Game Functions--------------------------------//
@@ -179,6 +175,7 @@ let score = 0
 let life = 3
 const booRow = 3
 const booCol = 6
+let interval = ""
 
 
 const lasers = []
@@ -186,13 +183,27 @@ const spaceMons = []
 const spaceMonsGrid = []
 
 const addtoScore = (amount) => {
-  score += amount;
-  scoreBox.textContent = score;
+  if (score < 17) {
+    score += amount;
+    scoreBox.textContent = score;
+  } else {
+    score = 18
+    scoreBox.textContent = score;
+    console.log("WIN!")
+    clearInterval(interval)
+}
 }
 
 const lifeTracker = () => {
-  life--;
-  lifeBox.textContent = life;
+  if (life != 0) {
+    life--;
+    lifeBox.textContent = life;
+    
+  } else {
+    console.log("Game Over")
+    clearInterval(interval)
+  }
+
 }
 
 const fireLaser = ({ x, y, isMon = false }) => {
@@ -204,9 +215,10 @@ const fireLaser = ({ x, y, isMon = false }) => {
     }))
 }
 const removeMon = (spaceMon) => {
-  // console.log(spaceMonsGrid)
+  spaceMon.isMon = false;
   spaceMons.slice(spaceMons.indexOf(spaceMon), 1);
   spaceMon.remove();
+  
 }
 
 const removeLaser = (laser) => {
@@ -254,7 +266,6 @@ for (let r = 0; r < booRow; r++) {
     spaceMonsC.push(spaceMon);
   }
   spaceMonsGrid.push(spaceMonsC)
-  // console.log(spaceMonsGrid)
 }
 
 const getBotMon = () => {
@@ -339,4 +350,9 @@ const update = () => {
     })
   }
 };
-setInterval(update, 20)
+interval = setInterval(update, 20)
+
+
+
+
+// interval
