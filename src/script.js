@@ -85,17 +85,17 @@ class Ship extends Template {
       }, 1000)
     }
   }
-  kill() {
-    this.isAlive = false;
-    setTimeout(() => { this.spawn(); }, 3000);
-    this.el.style.opacity = 0;
-  }
+  // kill() {
+  //   this.isAlive = false;
+  //   setTimeout(() => { this.spawn(); }, 3000);
+  //   this.el.style.opacity = 0;
+  // }
   update() {
     const laser = this.hitDetection(this);
     if (laser && laser.isBoo && this.isAlive) {
       this.removeLaser(laser)
       this.lifeTracker()
-      this.kill()
+      // this.kill()
     }
   }
 }
@@ -126,13 +126,15 @@ class Boo extends Template {
     this.direction = 'right'
   }
   moveDown() {
-    this.setY(this.y + 5)
+    this.setY(this.y + 2)
+    // this.setY(kitty.y)
   }
+
   update() {
     if (this.direction === 'left') {
-      this.setX(this.x - 5)
+      this.setX(this.x - 1)
     } else {
-      this.setX(this.x + 5)
+      this.setX(this.x + 1)
     }
     const laser = this.hitDetection(this);
     if (laser && !laser.isBoo) {
@@ -160,13 +162,9 @@ class Laser extends Template {
 //-----------------------Game Functions--------------------------------//
 let score = 0
 let life = 3
-const booRow = 3
-const booCol = 6
 let interval = ""
-
 const lasers = []
 const boos = []
-const boosGrid = []
 
 const addtoScore = (amount) => {
   if (score < 17) {
@@ -201,17 +199,8 @@ const fireLaser = ({ x, y, isBoo = false }) => {
     }))
 }
 const removeBoo = (boo) => {
-  boo.isMon = false;
   boos.splice(boos.indexOf(boo), 1);
   boo.remove();
-
-  for (let row = 0; row < boosGrid.length; row++) {
-    for (let col = 0; col < boosGrid.length; col++) {
-      if (boosGrid[row][col] === boo) {
-        boosGrid[row][col] = null;
-      }
-    }
-  }
 }
 
 const removeLaser = (laser) => {
@@ -244,43 +233,25 @@ const kitty = new Ship({
   hitDetection,
 })
 
-for (let row = 0; row < booRow; row++) {
-  const boosCol = []
-  for (let col = 0; col < booCol; col++) {
+  for (let i = 0; i < 10; i++) {
     const boo = new Boo({
-      x: col * 100 + 400,
-      y: row * 50,
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * (window.innerHeight - 200),
       hitDetection,
       removeBoo,
       removeLaser,
       addtoScore,
     });
     boos.push(boo);
-    boosCol.push(boo);
+    console.log(boos)
   }
-  boosGrid.push(boosCol)
-}
-
-const getBottomBoo = () => {
-  const bottomBoos = [];
-  for (let col = 0; col < booCol; col++) {
-    for (let row = booRow - 1; row >= 0; row--) {
-      if (boosGrid[row][col]) {
-        bottomBoos.push(boosGrid[row][col]);
-        break;
-      }
-    }
-  }
-  return bottomBoos;
-};
 
 const getRandomBoo = (arr) => {
   return arr[parseInt(Math.random() * arr.length)]
 }
 
 const booLaser = () => {
-  const bottomBoos = getBottomBoo();
-  const randomBoo = getRandomBoo(bottomBoos);
+  const randomBoo = getRandomBoo(boos);
   fireLaser({
     x: randomBoo.x,
     y: randomBoo.y,
@@ -289,19 +260,6 @@ const booLaser = () => {
 };
 
 setInterval(booLaser, 1000)
-
-const getLeftBoo = () => {
-  return boos.reduce((minBoo, currentBoo) => {
-    return currentBoo.x < minBoo.x
-      ? currentBoo : minBoo;
-  })
-}
-const getRightBoo = () => {
-  return boos.reduce((maxBoo, currentBoo) => {
-    return currentBoo.x > maxBoo.x
-      ? currentBoo : maxBoo;
-  })
-}
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
@@ -336,19 +294,18 @@ const update = () => {
     boo.update();
   });
 
-  const leftBoo = getLeftBoo();
-  if (leftBoo.x < 0) {
-    boos.forEach(boo => {
-      boo.setDirectionRight();
+  boos.forEach((boo) => {
+    if (boo.x < 0) {
+      boo.setDirectionRight()
       boo.moveDown();
-    })
-  }
-  const rightBoo = getRightBoo();
-  if (rightBoo.x > window.innerWidth - 50) {
-    boos.forEach(boo => {
+    }
+  });
+
+  boos.forEach((boo) => {
+    if (boo.x > window.innerWidth - 50) {
       boo.setDirectionLeft();
       boo.moveDown();
-    })
-  }
-};
+    }
+  });
+}
 interval = setInterval(update, 20)

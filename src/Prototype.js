@@ -138,7 +138,7 @@ class Monster extends template {
     removeLaser,
     addtoScore,
   }) {
-    super({ tag: 'img', className: 'monster' });
+    super({ tag: 'img', className: 'boo' });
     this.element.src = boo;
     this.direction = 'left';
 

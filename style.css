@@ -6,11 +6,11 @@ html {
   height: 100%;
   width: 100%;
   margin: 0;
-  background-color: black;
-  /* background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
+  /* background-color: black; */
+  background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
   background-position: center;
   background-size: cover;
-  background-repeat: no-repeat; */
+  background-repeat: no-repeat;
 }
 
 /* .gameModal {
@@ -45,16 +45,4 @@ html {
 .boo {
   width: 50px;
   height: 50px;
-}
-
-
-
-.entity {
-  position: fixed;
-}
-
-.bullet {
-  background-color: red;
-  width: 6px;
-  height: 6px;
 }
