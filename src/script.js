@@ -125,16 +125,26 @@ class Boo extends Template {
   setDirectionRight() {
     this.direction = 'right'
   }
-  moveDown() {
-    this.setY(this.y + 2)
-    // this.setY(kitty.y)
+  // this.setY(this.y + 2)
+  moveVer() {
+    if (kitty.y > this.y) {
+      this.setY(this.y + 2)
+    } else {
+      this.setY(this.y - 2)
+    }
   }
-
+  moveDia() {
+    if (kitty.x > this.x) {
+      this.setX(this.x + 2)
+    } else {
+      this.setX(this.x - 2)
+    }
+}
   update() {
     if (this.direction === 'left') {
-      this.setX(this.x - 1)
+      this.setX(this.x - 5)
     } else {
-      this.setX(this.x + 1)
+      this.setX(this.x + 5)
     }
     const laser = this.hitDetection(this);
     if (laser && !laser.isBoo) {
@@ -233,18 +243,18 @@ const kitty = new Ship({
   hitDetection,
 })
 
-  for (let i = 0; i < 10; i++) {
-    const boo = new Boo({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * (window.innerHeight - 200),
-      hitDetection,
-      removeBoo,
-      removeLaser,
-      addtoScore,
-    });
-    boos.push(boo);
-    console.log(boos)
-  }
+for (let i = 0; i < 10; i++) {
+  const boo = new Boo({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * (window.innerHeight - 200),
+    hitDetection,
+    removeBoo,
+    removeLaser,
+    addtoScore,
+  });
+  boos.push(boo);
+  console.log(boos)
+}
 
 const getRandomBoo = (arr) => {
   return arr[parseInt(Math.random() * arr.length)]
@@ -292,20 +302,21 @@ const update = () => {
 
   boos.forEach((boo) => {
     boo.update();
+    boo.moveVer()
+    boo.moveDia()
   });
 
   boos.forEach((boo) => {
     if (boo.x < 0) {
       boo.setDirectionRight()
-      boo.moveDown();
     }
   });
 
   boos.forEach((boo) => {
     if (boo.x > window.innerWidth - 50) {
       boo.setDirectionLeft();
-      boo.moveDown();
     }
   });
 }
-interval = setInterval(update, 20)
+
+setInterval(update, 20)
