@@ -1,19 +1,30 @@
 body,
 html {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
+  justify-content: center;
   height: 100%;
   width: 100%;
   margin: 0;
-  /* background-color: black; */
+  background-color: black;
+  /* background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; */
+}
+
+/* .gameModal {
+  height: 100%;
+  width: 100%;
   background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-}
+  z-index: 1;
+} */
 
 .score, .life {
-  color: white;
+  color: red;
 }
 
 .template {
@@ -26,12 +37,24 @@ html {
   height: 90px;
 }
 
-.catLaser {
+.laser {
   width: 20px;
   height: 20px;
 }
 
-.monster {
-  width: 80px;
-  height: 80px;
+.boo {
+  width: 50px;
+  height: 50px;
+}
+
+
+
+.entity {
+  position: fixed;
+}
+
+.bullet {
+  background-color: red;
+  width: 6px;
+  height: 6px;
 }

@@ -1,14 +1,14 @@
-// const gameModal = document.querySelector(".gameModal")
+const gameModal = document.querySelector(".gameModal")
 // const cat = document.querySelector(".cat")
 // const boss = document.querySelector(".boss")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
-const catImage = "https://www.icegif.com/wp-content/uploads/nyan-cat-icegif-13.gif"
+const catImage = "./img/nyanCat.gif"
 const boo = "https://66.media.tumblr.com/06ad37efe01d51ffc2f58363fe989653/tumblr_my74o3mTMV1rfjowdo1_500.gif"
 const sheep = "https://64.media.tumblr.com/bc0b793c5949fbf57dc342422da1da28/tumblr_mmxhwa7Bmz1rfjowdo1_500.gif"
-let healthMeter = 100
-let hungryMeter = 100
-let happyMeter = 100
+// let healthMeter = 100
+// let hungryMeter = 100
+// let happyMeter = 100
 let apple = 5
 
 // let sleep = () => {
@@ -38,6 +38,8 @@ let apple = 5
 
 //-----------------Keys-------------------------
 const keys = {
+  w: false,
+  s: false,
   a: false,
   d: false,
   [' ']: false,
@@ -52,7 +54,7 @@ document.addEventListener('keyup', e => {
 class template {
   constructor({ tag = 'div', className = '' } = {}) {
     this.element = document.createElement(tag);
-    document.body.appendChild(this.element);
+    gameModal.appendChild(this.element);
     this.element.className = 'template ' + className;
   }
   setX(x) {
@@ -82,6 +84,12 @@ class CatShip extends template {
   moveRight() {
     this.setX(this.x + 5)
   }
+  moveUp() {
+    this.setY(this.y - 5)
+  }
+  moveDown() {
+    this.setY(this.y + 5)
+  }
   shoot({ fireLaser }) {
     if (this.fireRate) {
       this.fireRate = false
@@ -105,7 +113,7 @@ class CatShip extends template {
 //------------------------Cat Laser--------------------------
 class CatLaser extends template {
   constructor({ x, y, isMon }) {
-    super({ tag: 'img', className: 'catLaser' })
+    super({ tag: 'img', className: 'laser' })
     this.element.src = sheep;
     this.setX(x);
     this.setY(y);
@@ -185,20 +193,21 @@ const spaceMonsGrid = []
 const addtoScore = (amount) => {
   if (score < 17) {
     score += amount;
-    scoreBox.textContent = score;
+    scoreBox.textContent = `Kills: ${score}`;
   } else {
     score = 18
-    scoreBox.textContent = score;
+    apple += 1
+    scoreBox.textContent = `Kills: ${score}`;
     console.log("WIN!")
     clearInterval(interval)
-}
+  }
 }
 
 const lifeTracker = () => {
   if (life != 0) {
     life--;
-    lifeBox.textContent = life;
-    
+    lifeBox.textContent = `life: ${life}`;
+
   } else {
     console.log("Game Over")
     clearInterval(interval)
@@ -218,7 +227,7 @@ const removeMon = (spaceMon) => {
   spaceMon.isMon = false;
   spaceMons.slice(spaceMons.indexOf(spaceMon), 1);
   spaceMon.remove();
-  
+
 }
 
 const removeLaser = (laser) => {
@@ -255,8 +264,8 @@ for (let r = 0; r < booRow; r++) {
   const spaceMonsC = []
   for (let c = 0; c < booCol; c++) {
     const spaceMon = new Monster({
-      x: c * 100 + 350,
-      y: r * 50 + 50,
+      x: c * 100 + 400,
+      y: r * 50,
       hitDetection,
       removeMon,
       removeLaser,
@@ -312,6 +321,12 @@ const getRightMon = () => {
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
+  if (keys[`w`] && kitty.y > 0) {
+    kitty.moveUp()
+  }
+  if (keys[`s`] && kitty.y < window.innerHeight - 100) {
+    kitty.moveDown()
+  }
   if (keys[`a`] && kitty.x > 0) {
     kitty.moveLeft()
   }
@@ -343,7 +358,7 @@ const update = () => {
     })
   }
   const rightMon = getRightMon();
-  if (rightMon.x > window.innerWidth - 80) {
+  if (rightMon.x > window.innerWidth - 50) {
     spaceMons.forEach(spaceMon => {
       spaceMon.setDirectionLeft();
       spaceMon.moveDown();
@@ -355,4 +370,3 @@ interval = setInterval(update, 20)
 
 
 
-// interval
