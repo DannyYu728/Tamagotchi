@@ -5,7 +5,11 @@ html {
   height: 100%;
   width: 100%;
   margin: 0;
-  background-color: black;
+  /* background-color: black; */
+  background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .score, .life {

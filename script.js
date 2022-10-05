@@ -79,6 +79,7 @@ class CatShip extends template {
     this.setX(window.innerWidth / 2);
     this.setY(window.innerHeight - 100);
     this.fireRate = true
+    // this.removeCat = this.removeCat
   }
   moveLeft() {
     this.setX(this.x - 5)
@@ -98,25 +99,34 @@ class CatShip extends template {
       }, 500)
     }
   }
+  // update() {
+  //   const laser = this.hitDetection(this);
+  //   if (laser) {
+  //     this.removeCat(this.element)
+  //     this.removeLaser(laser)
+  //   }
+  // }
 }
-//Cat Laser
+//------------------------Cat Laser--------------------------
 class CatLaser extends template {
-  constructor({ x, y }) {
+  constructor({ x, y, isMon }) {
     // super({ className: 'catLaser' })
     super({ tag: 'img', className: 'catLaser' })
     this.element.src = sheep;
     this.setX(x);
     this.setY(y);
+    this.isMon = isMon;
   }
-  updateUp() {
-    this.setY(this.y - 5);
+  update() {
+    const direction = this.isMon ? 5 : - 5;
+    this.setY(this.y + direction);
   }
   remove() {
     this.element.remove();
     this.element = null;
   }
 }
-// Boo
+// -------------------------Boo---------------------------
 class Monster extends template {
   constructor({
     x,
@@ -155,7 +165,7 @@ class Monster extends template {
       this.setX(this.x + 1)
     }
     const laser = this.hitDetection(this);
-    if (laser) {
+    if (laser && !laser.isMon) {
       this.removeMon(this.element)
       this.removeLaser(laser)
       this.addtoScore(10)
@@ -165,7 +175,13 @@ class Monster extends template {
 //-----------------------Game Functions--------------------------------//
 let score = 0
 let life = 3
-const kitty = new CatShip()
+const booRow = 3
+const booCol = 6
+const kitty = new CatShip({
+    // removeLaser,
+    // hitDetection,
+})
+
 const lasers = []
 const spaceMons = []
 const spaceMonsGrid = []
@@ -180,23 +196,23 @@ const lifeTracker = () => {
   lifeBox.textContent = life;
 }
 
-const fireLaser = ({ x, y }) => {
+const fireLaser = ({ x, y, isMon = false }) => {
   lasers.push(
     new CatLaser({
       x,
       y,
+      isMon
     }))
 }
 const removeMon = (spaceMon) => {
+  // console.log(spaceMonsGrid)
+  spaceMons.slice(spaceMons.indexOf(spaceMon), 1);
   spaceMon.remove();     
-  spaceMonsGrid.splice(spaceMonsGrid.indexOf(spaceMon), 1);
-  spaceMon = null;
 }
 
 const removeLaser = (laser) => {
-  laser.remove();
   lasers.splice(lasers.indexOf(laser), 1);
-  laser = null
+  laser.remove();
 }
 
 const isHit = (object1, object2) => {
@@ -218,11 +234,9 @@ const hitDetection = (object) => {
   return null;
 }
 
-
-
-for (let r = 0; r < 3; r++) {
+for (let r = 0; r < booRow; r++) {
   const spaceMonsC = []
-  for (let c = 0; c < 6; c++) {
+  for (let c = 0; c < booCol; c++) {
     const spaceMon = new Monster({
       x: c * 100 + 350,
       y: r * 50 + 50,
@@ -235,21 +249,37 @@ for (let r = 0; r < 3; r++) {
     spaceMonsC.push(spaceMon);
   }
   spaceMonsGrid.push(spaceMonsC)
-  console.log(spaceMonsGrid)
+  // console.log(spaceMonsGrid)
 }
 
-// const getBotMon = () => {
-//   const botMons = [];
-//   for (let c = 0; c < 6; c++) {
-//     for (let r = 2; r >= 0; r--) {
-//       if (spaceMonsGrid[r][c]) {
-//         botMons.push(spaceMonsGrid[r][c]);
-//         break;
-//       }
-//     }
-//   }
-//   return botMons
-// }
+const getBotMon = () => {
+  const botMons = [];
+  for (let c = 0; c < booCol; c++) {
+    for (let r = booRow - 1; r >= 0; r--) {
+      if (spaceMonsGrid[r][c]) {
+        botMons.push(spaceMonsGrid[r][c]);
+        break;
+      }
+    }
+  }
+  return botMons
+}
+
+const getRandomMon = (arr) => {
+  return arr[parseInt(Math.random() * arr.length)]
+}
+
+const booLaser = () => {
+  botMon = getBotMon()
+  ranMon = getRandomMon(botMon)
+  fireLaser({
+    x: ranMon.x,
+    y: ranMon.y,
+    isMon: true,
+  })
+}
+
+setInterval(booLaser, 1000)
 
 const getLeftMon = () => {
   return spaceMons.reduce((minSpaceMon, currentspaceMon) => {
@@ -278,7 +308,7 @@ const update = () => {
     })
   }
   lasers.forEach(laser => {
-    laser.updateUp();
+    laser.update();
     if (laser.y < 0) {
       laser.remove()
       lasers.splice(lasers.indexOf(laser), 1);
