@@ -8,6 +8,10 @@ html {
   background-color: black;
 }
 
+.score, .life {
+  color: white;
+}
+
 .template {
   position: fixed;
 }

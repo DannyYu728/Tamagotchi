@@ -1,6 +1,8 @@
 // const gameModal = document.querySelector(".gameModal")
 // const cat = document.querySelector(".cat")
 // const boss = document.querySelector(".boss")
+const scoreBox = document.querySelector(".score")
+const lifeBox = document.querySelector(".life")
 const catImage = "https://www.icegif.com/wp-content/uploads/nyan-cat-icegif-13.gif"
 const boo = "https://66.media.tumblr.com/06ad37efe01d51ffc2f58363fe989653/tumblr_my74o3mTMV1rfjowdo1_500.gif"
 const sheep = "https://64.media.tumblr.com/bc0b793c5949fbf57dc342422da1da28/tumblr_mmxhwa7Bmz1rfjowdo1_500.gif"
@@ -116,7 +118,14 @@ class CatLaser extends template {
 }
 // Boo
 class Monster extends template {
-  constructor({ x, y, hitDetection, removeMon, removeLaser }) {
+  constructor({
+    x,
+    y,
+    hitDetection,
+    removeMon,
+    removeLaser,
+    addtoScore,
+  }) {
     super({ tag: 'img', className: 'monster' });
     this.element.src = boo;
     this.direction = 'left';
@@ -124,6 +133,7 @@ class Monster extends template {
     this.hitDetection = hitDetection;
     this.removeMon = removeMon
     this.removeLaser = removeLaser
+    this.addtoScore = addtoScore
 
 
     this.setX(x);
@@ -148,12 +158,28 @@ class Monster extends template {
     if (laser) {
       this.removeMon(this.element)
       this.removeLaser(laser)
+      this.addtoScore(10)
     }
   }
 }
 //-----------------------Game Functions--------------------------------//
+let score = 0
+let life = 3
 const kitty = new CatShip()
 const lasers = []
+const spaceMons = []
+const spaceMonsGrid = []
+
+const addtoScore = (amount) => {
+  score += amount;
+  scoreBox.textContent = score;
+}
+
+const lifeTracker = () => {
+  life --;
+  lifeBox.textContent = life;
+}
+
 const fireLaser = ({ x, y }) => {
   lasers.push(
     new CatLaser({
@@ -193,8 +219,7 @@ const hitDetection = (object) => {
 }
 
 
-const spaceMons = []
-const spaceMonsGrid = []
+
 for (let r = 0; r < 3; r++) {
   const spaceMonsC = []
   for (let c = 0; c < 6; c++) {
@@ -204,6 +229,7 @@ for (let r = 0; r < 3; r++) {
       hitDetection,
       removeMon,
       removeLaser,
+      addtoScore,
     });
     spaceMons.push(spaceMon);
     spaceMonsC.push(spaceMon);
