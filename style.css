@@ -25,7 +25,7 @@ html {
   position: fixed;
   background: url("./img/5.png") repeat-y;
   height: 7680px;
-  width: 1800px;
+  width: 100%;
   background-size: contain;
   animation: slide 10s linear infinite;
   z-index: -1;
@@ -58,6 +58,7 @@ html {
   padding: 0px;
   margin: 0px;
   filter: drop-shadow(30px 0px 15px black);
+  animation: smooth 1s;
 }
 
 .laser {
@@ -65,11 +66,43 @@ html {
   height: 20px;
   padding: 0px;
   margin: 0px;
+  filter: drop-shadow(0px 5px 5px black);
 }
 
 .boo {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   padding: 0px;
   margin: 0px;
+  filter: drop-shadow(0px 10px 10px black);
+  animation: smooth 1s;
+}
+
+.lakitu {
+  width: 150px;
+  height: 150px;
+  padding: 0px;
+  margin: 0px;
+  filter: drop-shadow(0px 10px 10px black);
+  animation: smooth 1s;
+}
+
+.boss {
+  width: 500px;
+  height: 500px;
+  padding: 0px;
+  margin: 0px;
+  filter: drop-shadow(0px 10px 10px black);
+  animation: smooth 1s;
+}
+
+
+@keyframes smooth {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
 }

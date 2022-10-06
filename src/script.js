@@ -1,7 +1,9 @@
 const catImage = "./img/nyanCat.gif"
-const boo = "./img/boo.gif"
+const booze = "./img/boo.gif"
 const sheep = "./img/rainSheep.gif"
-const movingBack = "https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif"
+const shells = "./img/shell.gif"
+const lakitu = "./img/lakitu.png"
+const cutie = "./img/cutie.gif"
 const gameModal = document.querySelector(".gameModal")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
@@ -46,7 +48,9 @@ class Ship extends Template {
     hitDetection,
     removeLaser,
     kamikaze,
+    ramming,
     removeBoo,
+    removeBoss,
   }) {
     super({ tag: 'img', className: 'cat' });
     this.element.src = catImage;
@@ -56,8 +60,10 @@ class Ship extends Template {
     this.hitDetection = hitDetection;
     this.removeLaser = removeLaser;
     this.spawn();
-    this.kamikaze = kamikaze
-    this.removeBoo = removeBoo
+    this.kamikaze = kamikaze;
+    this.ramming = ramming;
+    this.removeBoo = removeBoo;
+    this.removeBoss = removeBoss;
   }
   spawn() {
     this.isAlive = true;
@@ -83,6 +89,7 @@ class Ship extends Template {
       fireLaser({
         x: kitty.x + 15,
         y: kitty.y,
+        z: sheep,
       })
       setTimeout(() => {
         this.fireRate = true
@@ -112,21 +119,69 @@ class Ship extends Template {
         clearInterval(booPew)
       }
     }
+    const boss = this.ramming(this);
+    if (boss && this.isAlive) {
+      this.lifeTracker()
+      this.kill()
+    }
   }
 }
-// -------------------------Boo---------------------------
+//-------------------------Boss------------------------------
+class Boss extends Template {
+  constructor({
+    x,
+    y,
+    hitDetection,
+    removeLaser,
+    removeBoss,
+  }) {
+    super({ tag: 'img', className: 'boss' });
+    this.element.src = booze;
+    this.hitDetection = hitDetection;
+    this.removeLaser = removeLaser;
+    this.removeBoss = removeBoss
+    this.direction = 'left';
+    this.setX(x);
+    this.setY(y);
+    this.HP = 12;
+  }
+  setDirectionLeft() {
+    this.direction = 'left'
+  }
+  setDirectionRight() {
+    this.direction = 'right'
+  }
+  update() {
+    if (this.direction === 'left') {
+      this.setX(this.x - 3)
+    } else {
+      this.setX(this.x + 3)
+    }
+    const laser = this.hitDetection(this);
+    if (laser && !laser.isBoo) {
+      this.HP -= 1
+      if (this.HP === 0) {
+        removeBoss(this)
+      }
+      this.removeLaser(laser)
+    }
+  }
+}
+// -------------------------Enemies---------------------------
 class Boo extends Template {
   constructor({
     x,
     y,
+    z,
     hitDetection,
     removeBoo,
     removeLaser,
     addtoScore,
     isHoming,
+    classes
   }) {
-    super({ tag: 'img', className: 'boo' });
-    this.element.src = boo;
+    super({ tag: 'img', className: classes });
+    this.element.src = z;
     this.direction = 'left';
     this.hitDetection = hitDetection;
     this.removeBoo = removeBoo
@@ -183,9 +238,9 @@ class Boo extends Template {
 }
 //------------------------Laser--------------------------
 class Laser extends Template {
-  constructor({ x, y, isBoo }) {
+  constructor({ x, y, z, isBoo }) {
     super({ tag: 'img', className: 'laser' })
-    this.element.src = sheep;
+    this.element.src = z;
     this.setX(x);
     this.setY(y);
     this.isBoo = isBoo;
@@ -200,6 +255,7 @@ let score = 0
 let life = 3
 const lasers = []
 const boos = []
+const bosses = []
 
 const addtoScore = (amount) => {
   if (boos.length > 0) {
@@ -212,7 +268,6 @@ const addtoScore = (amount) => {
   }
 }
 
-
 const lifeTracker = () => {
   if (life != 0) {
     life--;
@@ -222,17 +277,23 @@ const lifeTracker = () => {
   }
 }
 
-const fireLaser = ({ x, y, isBoo = false }) => {
+const fireLaser = ({ x, y, z, isBoo = false }) => {
   lasers.push(
     new Laser({
       x,
       y,
-      isBoo
+      z,
+      isBoo,
     }))
 }
 const removeBoo = (boo) => {
   boos.splice(boos.indexOf(boo), 1);
   boo.remove();
+}
+
+const removeBoss = (boss) => {
+  bosses.splice(bosses.indexOf(boss), 1);
+  boss.remove();
 }
 
 const removeLaser = (laser) => {
@@ -258,6 +319,14 @@ const kamikaze = (object) => {
   }
   return null;
 }
+const ramming = (object) => {
+  for (let boss of bosses) {
+    if (collision(object, boss)) {
+      return boss
+    }
+  }
+  return null;
+}
 const hitDetection = (object) => {
   for (let laser of lasers) {
     if (collision(object, laser)) {
@@ -272,15 +341,28 @@ const kitty = new Ship({
   removeLaser,
   hitDetection,
   kamikaze,
-  removeBoo
+  ramming,
+  removeBoo,
+  removeBoss,
 })
+for (let j = 0; j < 1; j++) {
+  const boss = new Boss({
+    x: Math.random() * (window.innerWidth / 2),
+    y: Math.random() * (window.innerHeight - 900),
+    hitDetection,
+    removeBoss,
+    removeLaser,
+  })
+  bosses.push(boss)
+}
 
 let chaserSpawn = () => {
   if (boos.length > 0) {
-    // for (let i = 0; i < 5; i++) {
     const boo = new Boo({
       x: Math.random() * window.innerWidth,
-      y: Math.random() * (window.innerHeight - 200),
+      y: Math.random() * (window.innerHeight - 300),
+      z: cutie,
+      classes: "boo",
       hitDetection,
       removeBoo,
       removeLaser,
@@ -288,7 +370,6 @@ let chaserSpawn = () => {
       isHoming: true,
     });
     boos.push(boo);
-    // }
   }
 }
 setInterval(chaserSpawn, 3000)
@@ -298,6 +379,8 @@ for (let i = 0; i < 8; i++) {
     const boo = new Boo({
       x: i * 100 + 50,
       y: j * 50,
+      z: lakitu,
+      classes: "lakitu",
       hitDetection,
       removeBoo,
       removeLaser,
@@ -317,7 +400,9 @@ const booLaser = () => {
   fireLaser({
     x: randomBoo.x,
     y: randomBoo.y,
+    z: shells,
     isBoo: true,
+
   });
 };
 
@@ -352,6 +437,16 @@ const update = () => {
     }
   });
 
+  bosses.forEach((boss) => {
+    boss.update();
+    if (boss.x < 0) {
+      boss.setDirectionRight()
+    }
+    if (boss.x > window.innerWidth - 500) {
+      boss.setDirectionLeft();
+    }
+  });
+
   boos.forEach((boo) => {
     boo.update();
     if (boo.x < 0) {
@@ -362,8 +457,10 @@ const update = () => {
       boo.setDirectionLeft();
       boo.moveDown()
     }
-
   });
-
 }
 setInterval(update, 20)
+
+
+
+
