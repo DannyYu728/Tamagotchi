@@ -102,6 +102,7 @@ class Ship extends Template {
     if (life > 0) {
       setTimeout(() => { this.spawn(); }, 1000);
     }
+
   }
   update() {
     const laser = this.hitDetection(this);
