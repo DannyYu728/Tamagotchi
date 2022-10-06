@@ -7,23 +7,43 @@ html {
   width: 100%;
   margin: 0;
   /* background-color: black; */
-  background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
+  /* background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
   background-position: center;
   background-size: cover;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
 }
 
-/* .gameModal {
+.container {
+  position: fixed;
   height: 100%;
   width: 100%;
-  background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  z-index: 1;
-} */
+  overflow: hidden;
+  z-index: -1;
+}
 
-.score, .life {
+.gameModal {
+  position: fixed;
+  background: url("./img/5.png") repeat-y;
+  height: 7680px;
+  width: 1800px;
+  background-size: contain;
+  animation: slide 10s linear infinite;
+  z-index: -1;
+}
+
+@keyframes slide {
+  0% {
+    transform: translate(0, -3840px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.score,
+.life {
+  z-index: 1;
   color: red;
 }
 
@@ -33,16 +53,23 @@ html {
 
 .cat {
   transform: rotate(90deg);
-  width: 50px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
+  padding: 0px;
+  margin: 0px;
+  filter: drop-shadow(30px 0px 15px black);
 }
 
 .laser {
   width: 20px;
   height: 20px;
+  padding: 0px;
+  margin: 0px;
 }
 
 .boo {
   width: 50px;
   height: 50px;
+  padding: 0px;
+  margin: 0px;
 }

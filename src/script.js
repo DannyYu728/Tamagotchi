@@ -1,6 +1,7 @@
 const catImage = "./img/nyanCat.gif"
 const boo = "./img/boo.gif"
 const sheep = "./img/rainSheep.gif"
+const movingBack = "https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif"
 const gameModal = document.querySelector(".gameModal")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
@@ -62,7 +63,7 @@ class Ship extends Template {
     this.isAlive = true;
     this.element.style.opacity = 1;
     this.setX(window.innerWidth / 2);
-    this.setY(window.innerHeight - 80);
+    this.setY(window.innerHeight - 100);
   }
   moveLeft() {
     this.setX(this.x - 5)
@@ -122,7 +123,7 @@ class Boo extends Template {
     removeBoo,
     removeLaser,
     addtoScore,
-    isHoming
+    isHoming,
   }) {
     super({ tag: 'img', className: 'boo' });
     this.element.src = boo;
@@ -158,7 +159,6 @@ class Boo extends Template {
   moveDown() {
     this.setY(this.y + 25)
   }
-
   update() {
     if (!this.isHoming) {
       if (this.direction === 'left') {
@@ -179,7 +179,6 @@ class Boo extends Template {
         clearInterval(booPew)
       }
     }
-
   }
 }
 //------------------------Laser--------------------------
@@ -191,13 +190,11 @@ class Laser extends Template {
     this.setY(y);
     this.isBoo = isBoo;
   }
-
   update() {
     const directionY = this.isBoo ? 5 : - 5;
     this.setY(this.y + directionY);
   }
 }
-
 //-----------------------Game Functions--------------------------------//
 let score = 0
 let life = 3
@@ -208,7 +205,6 @@ const addtoScore = (amount) => {
   if (boos.length > 0) {
     score += amount;
     scoreBox.textContent = `Kills: ${score}`;
-    console.log(boos.length)
   } else {
     score += amount;
     scoreBox.textContent = `Kills: ${score}`;
@@ -279,20 +275,25 @@ const kitty = new Ship({
   removeBoo
 })
 
-for (let i = 0; i < 10; i++) {
-  const boo = new Boo({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * (window.innerHeight - 200),
-    hitDetection,
-    removeBoo,
-    removeLaser,
-    addtoScore,
-    isHoming: true,
-  });
-  boos.push(boo);
+let chaserSpawn = () => {
+  if (boos.length > 0) {
+    // for (let i = 0; i < 5; i++) {
+    const boo = new Boo({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * (window.innerHeight - 200),
+      hitDetection,
+      removeBoo,
+      removeLaser,
+      addtoScore,
+      isHoming: true,
+    });
+    boos.push(boo);
+    // }
+  }
 }
+setInterval(chaserSpawn, 3000)
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 8; i++) {
   for (let j = 0; j < 3; j++) {
     const boo = new Boo({
       x: i * 100 + 50,
@@ -320,7 +321,7 @@ const booLaser = () => {
   });
 };
 
-let booPew = setInterval(booLaser, 1000);
+let booPew = setInterval(booLaser, 1500);
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
