@@ -45,6 +45,8 @@ class Ship extends Template {
     lifeTracker,
     hitDetection,
     removeLaser,
+    kamikaze,
+    removeBoo,
   }) {
     super({ tag: 'img', className: 'cat' });
     this.element.src = catImage;
@@ -54,6 +56,8 @@ class Ship extends Template {
     this.hitDetection = hitDetection;
     this.removeLaser = removeLaser;
     this.spawn();
+    this.kamikaze = kamikaze
+    this.removeBoo = removeBoo
   }
   spawn() {
     this.isAlive = true;
@@ -97,6 +101,14 @@ class Ship extends Template {
       this.lifeTracker()
       // this.kill()
     }
+    const boo = this.kamikaze(this);
+    if (boo) {
+      this.removeBoo(boo)
+      this.lifeTracker()
+      if (boos.length <= 0) {
+        clearInterval(booPew)
+      }
+    }
   }
 }
 // -------------------------Boo---------------------------
@@ -126,19 +138,19 @@ class Boo extends Template {
     this.direction = 'right'
   }
 
-    moveVer() {
-      if (kitty.y > this.y) {
-        this.setY(this.y + 2)
-      } else {
-        this.setY(this.y - 2)
-      }
+  moveVer() {
+    if (kitty.y > this.y) {
+      this.setY(this.y + 2)
+    } else {
+      this.setY(this.y - 2)
     }
-    moveDia() {
-      if (kitty.x > this.x) {
-        this.setX(this.x + 2)
-      } else {
-        this.setX(this.x - 2)
-      }
+  }
+  moveDia() {
+    if (kitty.x > this.x) {
+      this.setX(this.x + 2)
+    } else {
+      this.setX(this.x - 2)
+    }
   }
   update() {
     // if (this.direction === 'left') {
@@ -223,7 +235,7 @@ const removeLaser = (laser) => {
   laser.remove();
 }
 
-const isHit = (object1, object2) => {
+const collision = (object1, object2) => {
   const rect1 = object1.element.getBoundingClientRect();
   const rect2 = object2.element.getBoundingClientRect();
   return !(
@@ -233,9 +245,17 @@ const isHit = (object1, object2) => {
     rect1.top > rect2.bottom)
 }
 
+const kamikaze = (object) => {
+  for (let boo of boos) {
+    if (collision(object, boo)) {
+      return boo
+    }
+  }
+  return null;
+}
 const hitDetection = (object) => {
   for (let laser of lasers) {
-    if (isHit(object, laser)) {
+    if (collision(object, laser)) {
       return laser
     }
   }
@@ -246,6 +266,8 @@ const kitty = new Ship({
   lifeTracker,
   removeLaser,
   hitDetection,
+  kamikaze,
+  removeBoo
 })
 
 for (let i = 0; i < 2; i++) {
@@ -276,7 +298,7 @@ const booLaser = () => {
   console.log("pew")
 };
 
-var booPew = setInterval(booLaser,1000);
+var booPew = setInterval(booLaser, 1000);
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
