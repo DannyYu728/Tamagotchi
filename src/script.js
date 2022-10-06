@@ -89,22 +89,25 @@ class Ship extends Template {
       }, 1000)
     }
   }
-  // kill() {
-  //   this.isAlive = false;
-  //   setTimeout(() => { this.spawn(); }, 3000);
-  //   this.el.style.opacity = 0;
-  // }
+  kill() {
+    this.isAlive = false;
+    this.element.style.opacity = 0;
+    if (life > 0) {
+      setTimeout(() => { this.spawn(); }, 1000);
+    }
+  }
   update() {
     const laser = this.hitDetection(this);
     if (laser && laser.isBoo && this.isAlive) {
       this.removeLaser(laser)
       this.lifeTracker()
-      // this.kill()
+      this.kill()
     }
     const boo = this.kamikaze(this);
-    if (boo) {
+    if (boo && this.isAlive) {
       this.removeBoo(boo)
       this.lifeTracker()
+      this.kill()
       if (boos.length <= 0) {
         clearInterval(booPew)
       }
@@ -137,19 +140,18 @@ class Boo extends Template {
   setDirectionRight() {
     this.direction = 'right'
   }
-
   moveVer() {
     if (kitty.y > this.y) {
-      this.setY(this.y + 2)
+      this.setY(this.y + 1)
     } else {
-      this.setY(this.y - 2)
+      this.setY(this.y - 1)
     }
   }
   moveDia() {
     if (kitty.x > this.x) {
-      this.setX(this.x + 2)
+      this.setX(this.x + 1)
     } else {
-      this.setX(this.x - 2)
+      this.setX(this.x - 1)
     }
   }
   update() {
@@ -181,9 +183,10 @@ class Laser extends Template {
     this.setY(y);
     this.isBoo = isBoo;
   }
+
   update() {
-    const direction = this.isBoo ? 5 : - 5;
-    this.setY(this.y + direction);
+    const directionY = this.isBoo ? 5 : - 5;
+    this.setY(this.y + directionY);
   }
 }
 
@@ -202,7 +205,6 @@ const addtoScore = (amount) => {
     apple += 1
     scoreBox.textContent = `Kills: ${score}`;
     console.log("WIN!")
-    // clearInterval(interval)
   }
 }
 
@@ -213,7 +215,6 @@ const lifeTracker = () => {
 
   } else {
     console.log("Game Over")
-    // clearInterval(interval)
   }
 }
 
@@ -270,7 +271,7 @@ const kitty = new Ship({
   removeBoo
 })
 
-for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 5; i++) {
   const boo = new Boo({
     x: Math.random() * window.innerWidth,
     y: Math.random() * (window.innerHeight - 200),
@@ -295,10 +296,9 @@ const booLaser = () => {
     y: randomBoo.y,
     isBoo: true,
   });
-  console.log("pew")
 };
 
-var booPew = setInterval(booLaser, 1000);
+let booPew = setInterval(booLaser, 1000);
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
@@ -331,16 +331,19 @@ const update = () => {
 
   boos.forEach((boo) => {
     boo.moveDia()
-    boo.moveVer()
-    boo.update();
+    // boo.moveVer()
+    // boo.update();
     if (boo.x < 0) {
       boo.setDirectionRight()
     }
     if (boo.x > window.innerWidth - 50) {
       boo.setDirectionLeft();
     }
-
   });
 
+  boos.forEach((boo) => {
+    boo.moveVer()
+    boo.update();
+  });
 }
 setInterval(update, 20)
