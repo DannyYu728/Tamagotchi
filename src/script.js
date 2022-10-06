@@ -162,6 +162,7 @@ class Boss extends Template {
       this.HP -= 1
       if (this.HP === 0) {
         removeBoss(this)
+        clearInterval(gameLogic)
       }
       this.removeLaser(laser)
     }
@@ -178,7 +179,8 @@ class Boo extends Template {
     removeLaser,
     addtoScore,
     isHoming,
-    classes
+    classes,
+    bossSpawn,
   }) {
     super({ tag: 'img', className: classes });
     this.element.src = z;
@@ -190,6 +192,7 @@ class Boo extends Template {
     this.setX(x);
     this.setY(y);
     this.isHoming = isHoming;
+    this.bossSpawn = bossSpawn
   }
   setDirectionLeft() {
     this.direction = 'left'
@@ -231,6 +234,7 @@ class Boo extends Template {
       this.removeLaser(laser)
       this.addtoScore(1)
       if (boos.length <= 0) {
+        this.bossSpawn()
         clearInterval(booPew)
       }
     }
@@ -264,7 +268,7 @@ const addtoScore = (amount) => {
   } else {
     score += amount;
     scoreBox.textContent = `Kills: ${score}`;
-    console.log("Win!")
+    console.log("Boss Battle!")
   }
 }
 
@@ -345,16 +349,17 @@ const kitty = new Ship({
   removeBoo,
   removeBoss,
 })
-for (let j = 0; j < 1; j++) {
-  const boss = new Boss({
-    x: Math.random() * (window.innerWidth / 2),
-    y: Math.random() * (window.innerHeight - 900),
-    hitDetection,
-    removeBoss,
-    removeLaser,
-  })
-  bosses.push(boss)
-}
+
+let bossSpawn = () => {
+    const boss = new Boss({
+      x: Math.random() * (window.innerWidth / 2),
+      y: Math.random() * (window.innerHeight - 900),
+      hitDetection,
+      removeBoss,
+      removeLaser,
+    })
+    bosses.push(boss)
+  }
 
 let chaserSpawn = () => {
   if (boos.length > 0) {
@@ -368,14 +373,15 @@ let chaserSpawn = () => {
       removeLaser,
       addtoScore,
       isHoming: true,
+      bossSpawn,
     });
     boos.push(boo);
   }
 }
 setInterval(chaserSpawn, 3000)
 
-for (let i = 0; i < 8; i++) {
-  for (let j = 0; j < 3; j++) {
+for (let i = 0; i < 1; i++) {
+  for (let j = 0; j < 1; j++) {
     const boo = new Boo({
       x: i * 100 + 50,
       y: j * 50,
@@ -386,6 +392,7 @@ for (let i = 0; i < 8; i++) {
       removeLaser,
       addtoScore,
       isHoming: false,
+      bossSpawn,
     });
     boos.push(boo);
   }
@@ -459,7 +466,7 @@ const update = () => {
     }
   });
 }
-setInterval(update, 20)
+let gameLogic = setInterval(update, 20)
 
 
 
