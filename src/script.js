@@ -4,7 +4,6 @@ const sheep = "./img/rainSheep.gif"
 const gameModal = document.querySelector(".gameModal")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
-let apple = 5
 //-----------------Keys-------------------------
 const keys = {
   w: false,
@@ -123,6 +122,7 @@ class Boo extends Template {
     removeBoo,
     removeLaser,
     addtoScore,
+    isHoming
   }) {
     super({ tag: 'img', className: 'boo' });
     this.element.src = boo;
@@ -133,6 +133,7 @@ class Boo extends Template {
     this.addtoScore = addtoScore
     this.setX(x);
     this.setY(y);
+    this.isHoming = isHoming;
   }
   setDirectionLeft() {
     this.direction = 'left'
@@ -154,14 +155,21 @@ class Boo extends Template {
       this.setX(this.x - 1)
     }
   }
+  moveDown() {
+    this.setY(this.y + 25)
+  }
+
   update() {
-    // if (this.direction === 'left') {
-    //   this.setX(this.x - 2)
-    // } else {
-    //   this.setX(this.x + 2)
-    // }
-    // this.moveVer()
-    // this.moveDia()
+    if (!this.isHoming) {
+      if (this.direction === 'left') {
+        this.setX(this.x - 3)
+      } else {
+        this.setX(this.x + 3)
+      }
+    } else {
+      this.moveDia()
+      this.moveVer()
+    }
     const laser = this.hitDetection(this);
     if (laser && !laser.isBoo) {
       this.removeBoo(this)
@@ -197,22 +205,22 @@ const lasers = []
 const boos = []
 
 const addtoScore = (amount) => {
-  if (score < 17) {
+  if (boos.length > 0) {
     score += amount;
     scoreBox.textContent = `Kills: ${score}`;
+    console.log(boos.length)
   } else {
-    score = 18
-    apple += 1
+    score += amount;
     scoreBox.textContent = `Kills: ${score}`;
-    console.log("WIN!")
+    console.log("Win!")
   }
 }
+
 
 const lifeTracker = () => {
   if (life != 0) {
     life--;
-    lifeBox.textContent = `life: ${life}`;
-
+    lifeBox.textContent = `Life: ${life}`;
   } else {
     console.log("Game Over")
   }
@@ -271,7 +279,7 @@ const kitty = new Ship({
   removeBoo
 })
 
-for (let i = 0; i < 5; i++) {
+for (let i = 0; i < 10; i++) {
   const boo = new Boo({
     x: Math.random() * window.innerWidth,
     y: Math.random() * (window.innerHeight - 200),
@@ -279,15 +287,29 @@ for (let i = 0; i < 5; i++) {
     removeBoo,
     removeLaser,
     addtoScore,
+    isHoming: true,
   });
   boos.push(boo);
-  console.log(boos)
+}
+
+for (let i = 0; i < 10; i++) {
+  for (let j = 0; j < 3; j++) {
+    const boo = new Boo({
+      x: i * 100 + 50,
+      y: j * 50,
+      hitDetection,
+      removeBoo,
+      removeLaser,
+      addtoScore,
+      isHoming: false,
+    });
+    boos.push(boo);
+  }
 }
 
 const getRandomBoo = (arr) => {
   return arr[parseInt(Math.random() * arr.length)]
 }
-
 
 const booLaser = () => {
   const randomBoo = getRandomBoo(boos);
@@ -302,16 +324,16 @@ let booPew = setInterval(booLaser, 1000);
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
-  if (keys[`w`] && kitty.y > 0) {
+  if (keys[`w`] && kitty.y > 0 && kitty.isAlive) {
     kitty.moveUp()
   }
-  if (keys[`s`] && kitty.y < window.innerHeight - 100) {
+  if (keys[`s`] && kitty.isAlive && kitty.y < window.innerHeight - 100) {
     kitty.moveDown()
   }
-  if (keys[`a`] && kitty.x > 0) {
+  if (keys[`a`] && kitty.isAlive && kitty.x > 0) {
     kitty.moveLeft()
   }
-  if (keys[`d`] && kitty.x < window.innerWidth - 50) {
+  if (keys[`d`] && kitty.isAlive && kitty.x < window.innerWidth - 50) {
     kitty.moveRight()
   }
   if (keys[` `]) {
@@ -330,20 +352,17 @@ const update = () => {
   });
 
   boos.forEach((boo) => {
-    boo.moveDia()
-    // boo.moveVer()
-    // boo.update();
+    boo.update();
     if (boo.x < 0) {
       boo.setDirectionRight()
+      boo.moveDown()
     }
     if (boo.x > window.innerWidth - 50) {
       boo.setDirectionLeft();
+      boo.moveDown()
     }
+
   });
 
-  boos.forEach((boo) => {
-    boo.moveVer()
-    boo.update();
-  });
 }
 setInterval(update, 20)
