@@ -1,14 +1,19 @@
-const catImage = "./img/nyanCat.gif"
-const booze = "./img/boo.gif"
+const catImage = "./img/nyanCat2.gif"
+const booze = "./img/alien.gif"
 const sheep = "./img/rainSheep.gif"
-const shells = "./img/shell.gif"
-const lakitu = "./img/lakitu.png"
-const cutie = "./img/cutie.gif"
+const shells = "./img/pump2.gif"
+const lakitu = "./img/witch.gif"
+const cutie = "./img/ghost2.gif"
 const gameModal = document.querySelector(".gameModal")
+const gameOver = document.querySelector(".gameOver")
+const winScreen = document.querySelector(".winScreen")
+const win = document.querySelector(".win")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
-//-----------------Keys-------------------------
+//-----------------Keys-----------------------------------------
 const keys = {
+  p: false,
+  m: false,
   w: false,
   s: false,
   a: false,
@@ -21,7 +26,10 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => {
   keys[e.key] = false;
 })
-//---------------------------Classes--------------------------
+//--------------------------Sound-------------------------------
+const bgMusic = new Audio('./audio/Nyan.mp3');
+const meow = new Audio('./audio/meow.wav');
+//---------------------------Classes----------------------------
 class Template {
   constructor({ tag = 'div', className = '' } = {}) {
     this.element = document.createElement(tag);
@@ -41,7 +49,7 @@ class Template {
     this.element = null;
   }
 }
-//-------------------------Ship-------------------------------
+//-------------------------Ship-----------------------------//
 class Ship extends Template {
   constructor({
     lifeTracker,
@@ -66,6 +74,7 @@ class Ship extends Template {
     this.removeBoss = removeBoss;
   }
   spawn() {
+    this.element.style.filter = 'drop-shadow(0px 5px 5px black) brightness(85%)';
     this.isAlive = true;
     this.element.style.opacity = 1;
     this.setX(window.innerWidth / 2);
@@ -98,9 +107,10 @@ class Ship extends Template {
   }
   kill() {
     this.isAlive = false;
-    this.element.style.opacity = 0;
+    this.element.style.opacity = 0.2;
+    this.element.style.filter = `grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8)`;
     if (life > 0) {
-      setTimeout(() => { this.spawn(); }, 1000);
+      setTimeout(() => { this.spawn(); }, 1500);
     }
 
   }
@@ -127,7 +137,7 @@ class Ship extends Template {
     }
   }
 }
-//-------------------------Boss------------------------------
+//-------------------------Boss---------------------------//
 class Boss extends Template {
   constructor({
     x,
@@ -135,16 +145,19 @@ class Boss extends Template {
     hitDetection,
     removeLaser,
     removeBoss,
+    bossAttacks,
   }) {
     super({ tag: 'img', className: 'boss' });
     this.element.src = booze;
     this.hitDetection = hitDetection;
     this.removeLaser = removeLaser;
     this.removeBoss = removeBoss
+    this.bossAttacks = bossAttacks
     this.direction = 'left';
     this.setX(x);
     this.setY(y);
     this.HP = 12;
+    this.fireRate = true
   }
   setDirectionLeft() {
     this.direction = 'left'
@@ -152,7 +165,23 @@ class Boss extends Template {
   setDirectionRight() {
     this.direction = 'right'
   }
+  attacks({ fireLaser }) {
+      if (this.fireRate) {
+        this.fireRate = false
+        fireLaser({
+          x: this.x + 150,
+          y: this.y + 300,
+          z: shells,
+          isBoo: true,
+        })
+        setTimeout(() => {
+          this.fireRate = true
+        }, 800)
+      }
+}
+
   update() {
+    this.attacks({ fireLaser });
     if (this.direction === 'left') {
       this.setX(this.x - 3)
     } else {
@@ -163,13 +192,15 @@ class Boss extends Template {
       this.HP -= 1
       if (this.HP === 0) {
         removeBoss(this)
+        winScreen.classList.remove('hidden')
+        win.textContent = `You Win! Your Score is ${score}🐱`;
         clearInterval(gameLogic)
       }
       this.removeLaser(laser)
     }
   }
 }
-// -------------------------Enemies---------------------------
+// -------------------------Enemies-------------------------//
 class Boo extends Template {
   constructor({
     x,
@@ -241,9 +272,9 @@ class Boo extends Template {
     }
   }
 }
-//------------------------Laser--------------------------
+//------------------------Laser---------------//
 class Laser extends Template {
-  constructor({ x, y, z, isBoo }) {
+  constructor({ x, y, z, isBoo, }) {
     super({ tag: 'img', className: 'laser' })
     this.element.src = z;
     this.setX(x);
@@ -251,7 +282,7 @@ class Laser extends Template {
     this.isBoo = isBoo;
   }
   update() {
-    const directionY = this.isBoo ? 5 : - 5;
+    const directionY = this.isBoo ? +5 : - 5;
     this.setY(this.y + directionY);
   }
 }
@@ -263,26 +294,21 @@ const boos = []
 const bosses = []
 
 const addtoScore = (amount) => {
-  if (boos.length > 0) {
-    score += amount;
-    scoreBox.textContent = `Kills: ${score}`;
-  } else {
-    score += amount;
-    scoreBox.textContent = `Kills: ${score}`;
-    console.log("Boss Battle!")
-  }
+  score += amount;
+  scoreBox.textContent = `Score: ${score}`;
 }
 
 const lifeTracker = () => {
-  if (life != 0) {
-    life--;
-    lifeBox.textContent = `Life: ${life}`;
+  life--;
+  if (life === 0) {
+    clearInterval(gameLogic)
+    gameOver.classList.remove('hidden')
   } else {
-    console.log("Game Over")
+    lifeBox.textContent = `Lives: ${life}🐱`;
   }
 }
 
-const fireLaser = ({ x, y, z, isBoo = false }) => {
+const fireLaser = ({ x, y, z, isBoo = false, }) => {
   lasers.push(
     new Laser({
       x,
@@ -341,29 +367,33 @@ const hitDetection = (object) => {
   return null;
 }
 
-const kitty = new Ship({
-  lifeTracker,
-  removeLaser,
-  hitDetection,
-  kamikaze,
-  ramming,
-  removeBoo,
-  removeBoss,
-})
+let kitty = null
+const kittySpawn = () => {
+  kitty = new Ship({
+    lifeTracker,
+    removeLaser,
+    hitDetection,
+    kamikaze,
+    ramming,
+    removeBoo,
+    removeBoss,
+  })
+  return kitty
+}
 
 let bossSpawn = () => {
-    const boss = new Boss({
-      x: Math.random() * (window.innerWidth / 2),
-      y: Math.random() * (window.innerHeight - 900),
-      hitDetection,
-      removeBoss,
-      removeLaser,
-    })
-    bosses.push(boss)
-  }
+  const boss = new Boss({
+    x: window.innerWidth / 2,
+    y: Math.random() * (window.innerHeight - 900),
+    hitDetection,
+    removeBoss,
+    removeLaser,
+  })
+  bosses.push(boss)
+}
 
-let chaserSpawn = () => {
-  if (boos.length > 0) {
+const chaserSpawn = () => {
+  if (bosses.length > 0 || boos.length > 0) {
     const boo = new Boo({
       x: Math.random() * window.innerWidth,
       y: Math.random() * (window.innerHeight - 300),
@@ -379,41 +409,43 @@ let chaserSpawn = () => {
     boos.push(boo);
   }
 }
-setInterval(chaserSpawn, 3000)
 
-for (let i = 0; i < 1; i++) {
-  for (let j = 0; j < 1; j++) {
-    const boo = new Boo({
-      x: i * 100 + 50,
-      y: j * 50,
-      z: lakitu,
-      classes: "lakitu",
-      hitDetection,
-      removeBoo,
-      removeLaser,
-      addtoScore,
-      isHoming: false,
-      bossSpawn,
-    });
-    boos.push(boo);
+const WitchSpawn = () => {
+  for (let i = 0; i < 1; i++) {
+    for (let j = 0; j < 1; j++) {
+      const boo = new Boo({
+        x: i * 100 + 50,
+        y: j * 50,
+        z: lakitu,
+        classes: "lakitu",
+        hitDetection,
+        removeBoo,
+        removeLaser,
+        addtoScore,
+        isHoming: false,
+        bossSpawn,
+      });
+      boos.push(boo);
+    }
   }
 }
 
 const getRandomBoo = (arr) => {
   return arr[parseInt(Math.random() * arr.length)]
 }
-
 const booLaser = () => {
   const randomBoo = getRandomBoo(boos);
   fireLaser({
-    x: randomBoo.x,
+    x: randomBoo.x + 25,
     y: randomBoo.y,
     z: shells,
     isBoo: true,
-
   });
 };
 
+kittySpawn()
+WitchSpawn()
+setInterval(chaserSpawn, 3000)
 let booPew = setInterval(booLaser, 1500);
 
 //-----------------------------Game Update Logic----------------
@@ -421,20 +453,29 @@ const update = () => {
   if (keys[`w`] && kitty.y > 0 && kitty.isAlive) {
     kitty.moveUp()
   }
-  if (keys[`s`] && kitty.isAlive && kitty.y < window.innerHeight - 100) {
+  if (keys[`s`] && kitty.isAlive && kitty.y < window.innerHeight - 80) {
     kitty.moveDown()
   }
   if (keys[`a`] && kitty.isAlive && kitty.x > 0) {
     kitty.moveLeft()
   }
-  if (keys[`d`] && kitty.isAlive && kitty.x < window.innerWidth - 50) {
+  if (keys[`d`] && kitty.isAlive && kitty.x < window.innerWidth - 80) {
     kitty.moveRight()
   }
   if (keys[` `]) {
+    meow.play();
     kitty.shoot({
       fireLaser
     })
   }
+  if (keys[`m`]) {
+    bgMusic.play();
+    bgMusic.loop = true;
+  }
+  if (keys[`p`]) {
+    bgMusic.pause();
+  }
+
   kitty.update()
 
   lasers.forEach(laser => {
@@ -447,10 +488,10 @@ const update = () => {
 
   bosses.forEach((boss) => {
     boss.update();
-    if (boss.x < 0) {
+    if (boss.x < 0 + 150) {
       boss.setDirectionRight()
     }
-    if (boss.x > window.innerWidth - 500) {
+    if (boss.x > window.innerWidth - 300) {
       boss.setDirectionLeft();
     }
   });
@@ -461,12 +502,13 @@ const update = () => {
       boo.setDirectionRight()
       boo.moveDown()
     }
-    if (boo.x > window.innerWidth - 50) {
+    if (boo.x > window.innerWidth - 100) {
       boo.setDirectionLeft();
       boo.moveDown()
     }
   });
 }
+
 let gameLogic = setInterval(update, 20)
 
 
