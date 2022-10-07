@@ -7,6 +7,9 @@ const cutie = "./img/ghost2.gif"
 const gameModal = document.querySelector(".gameModal")
 const gameOver = document.querySelector(".gameOver")
 const winScreen = document.querySelector(".winScreen")
+const startScreen = document.querySelector(".startScreen")
+const startButton = document.querySelector(".startButton")
+const resetButton = document.querySelector(".resetButton")
 const win = document.querySelector(".win")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
@@ -166,19 +169,19 @@ class Boss extends Template {
     this.direction = 'right'
   }
   attacks({ fireLaser }) {
-      if (this.fireRate) {
-        this.fireRate = false
-        fireLaser({
-          x: this.x + 150,
-          y: this.y + 300,
-          z: shells,
-          isBoo: true,
-        })
-        setTimeout(() => {
-          this.fireRate = true
-        }, 800)
-      }
-}
+    if (this.fireRate) {
+      this.fireRate = false
+      fireLaser({
+        x: this.x + 150,
+        y: this.y + 300,
+        z: shells,
+        isBoo: true,
+      })
+      setTimeout(() => {
+        this.fireRate = true
+      }, 800)
+    }
+  }
 
   update() {
     this.attacks({ fireLaser });
@@ -193,7 +196,7 @@ class Boss extends Template {
       if (this.HP === 0) {
         removeBoss(this)
         winScreen.classList.remove('hidden')
-        win.textContent = `You Win! Your Score is ${score}🐱`;
+        win.textContent = `You Win. Your Score is ${score}🐱`;
         clearInterval(gameLogic)
       }
       this.removeLaser(laser)
@@ -411,8 +414,8 @@ const chaserSpawn = () => {
 }
 
 const WitchSpawn = () => {
-  for (let i = 0; i < 1; i++) {
-    for (let j = 0; j < 1; j++) {
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 3; j++) {
       const boo = new Boo({
         x: i * 100 + 50,
         y: j * 50,
@@ -443,10 +446,10 @@ const booLaser = () => {
   });
 };
 
-kittySpawn()
-WitchSpawn()
-setInterval(chaserSpawn, 3000)
-let booPew = setInterval(booLaser, 1500);
+// kittySpawn()
+// WitchSpawn()
+// setInterval(chaserSpawn, 3000)
+// let booPew = setInterval(booLaser, 1500);
 
 //-----------------------------Game Update Logic----------------
 const update = () => {
@@ -509,8 +512,17 @@ const update = () => {
   });
 }
 
-let gameLogic = setInterval(update, 20)
+// let gameLogic = setInterval(update, 20)
 
+startButton.addEventListener('click', () => {
+  startScreen.classList.add('hidden')
+  kittySpawn()
+  WitchSpawn()
+  setInterval(chaserSpawn, 3000)
+  booPew = setInterval(booLaser, 1500);
+  gameLogic = setInterval(update, 20)
+});
 
-
-
+resetButton.addEventListener("click", function () {
+  location.reload();
+})

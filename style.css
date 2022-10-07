@@ -1,16 +1,10 @@
 body,
 html {
   display: flex;
-  /* align-items: center; */
   justify-content: center;
   height: 100%;
   width: 100%;
   margin: 0;
-  /* background-color: black; */
-  /* background-image: url("https://pixeljoint.com/files/icons/full/ezimba12821714477700.gif");
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat; */
 }
 
 .hidden {
@@ -24,15 +18,56 @@ html {
   overflow: hidden;
 }
 
-.gameOver, .winScreen {
+.gameOver, .winScreen, .startScreen {
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: black;
+  background: url("./img/gameOver.jpeg");
   z-index: 1;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  animation: screen 0.7s;
+}
+@keyframes screen {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.0);
+    /* transform: rotate(1.0); */
+  }
 }
 
-h1, .win {
+.winScreen {
+  background: url("./img/WinScreen.jpeg");
+}
+
+.startScreen{
+  background: url("./img/startScreen.jpeg");
+}
+
+.startButton, .resetButton {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: lightgray;
+  text-shadow: -1px -1px black, 1px 1px white;
+  color: gray;
+  border-radius: 7px;
+  box-shadow: 0 4px gray;
+  width: 100px;
+  height: 30px;
+  top: 50%;
+  left: 47%;
+  z-index: 2;
+}
+
+h1 {
   font-family: 'Games', sans-serif;
   text-align: center;
   position: fixed;
@@ -42,6 +77,10 @@ h1, .win {
   font-size: 200px;
   z-index: 1;
   animation: 2s Blazing infinite alternate linear;
+}
+
+.win {
+  font-size: 100px;
 }
 @keyframes Blazing {
   0% {
@@ -153,8 +192,8 @@ h1, .win {
 }
 
 .lakitu {
-  width: 85px;
-  height: 85px;
+  width: 55px;
+  height: 55px;
   padding: 0px;
   margin: 0px;
   filter: drop-shadow(0px 10px 10px black) brightness(85%);
