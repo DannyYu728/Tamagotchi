@@ -9,6 +9,7 @@ const gameOver = document.querySelector(".gameOver")
 const winScreen = document.querySelector(".winScreen")
 const startScreen = document.querySelector(".startScreen")
 const startButton = document.querySelector(".startButton")
+const homeButton = document.querySelector(".homeButton")
 const resetButton = document.querySelector(".resetButton")
 const win = document.querySelector(".win")
 const scoreBox = document.querySelector(".score")
@@ -536,6 +537,22 @@ startButton.addEventListener('click', () => {
   WitchSpawn();
   game.start();
 });
+
+homeButton.addEventListener('click', function () {
+  boos.forEach(boo => {
+    boo.remove()
+  })
+  kitty.remove()
+  boos.splice(0, boos.length)
+  game.stop()
+  life = 3
+  lifeBox.textContent = `Lives: ${life}🐱`
+  bgAnimation.stop()
+  gameModal.classList.add('hidden')
+  winScreen.classList.add('hidden')
+  startScreen.classList.remove('hidden')
+})
+
 resetButton.addEventListener("click", function () {
   boos.forEach(boo => {
     boo.remove()
@@ -546,6 +563,7 @@ resetButton.addEventListener("click", function () {
   life += 3
   lifeBox.textContent = `Lives: ${life}🐱`
   bgAnimation.stop()
+  gameModal.classList.add('hidden');
   gameOver.classList.add('hidden')
   startScreen.classList.remove('hidden');
 })

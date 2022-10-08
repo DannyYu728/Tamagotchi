@@ -49,7 +49,7 @@ html {
   background: url("./img/startScreen.jpeg");
 }
 
-.startButton, .resetButton {
+.startButton, .resetButton, .homeButton {
   position: fixed;
   display: flex;
   justify-content: center;
