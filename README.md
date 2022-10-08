@@ -42,3 +42,5 @@ For the Start Screen: https://wallpapermoon.com/
 Darkness's hochgeladene for the WinSreen: https://wall.alphacoders.com/profile.php?id=36892&lang=German
 
 Predvkill for the gameover Screen: https://www.deviantart.com/predvkill/
+
+Vladimir Nikolic for the Font: https://www.cdnfonts.com/games.font
