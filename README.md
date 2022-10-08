@@ -14,7 +14,7 @@ p to pause the music
 2. Throw your rainbowsheeps to remove any obstacle in your way.
 3. Battle to get the ultimate score.
 4. You have 3 lives.
-5. Boss battle will start once all the enemies are elimated.
+5. Boss battle will start once all the enemies are eliminated.
 
 ##### Roadmap(No Dates!)
 1. Be able to equip different SnackShips.
