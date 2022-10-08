@@ -134,19 +134,8 @@ h1 {
   height: 7680px;
   width: 100%;
   background-size: contain;
-  animation: slide 10s linear infinite;
-  filter: brightness(70%);
   z-index: 1;
-}
-
-@keyframes slide {
-  0% {
-    transform: translate(0, -3840px);
-  }
-
-  100% {
-    transform: translate(0, 0);
-  }
+  filter: brightness(70%);
 }
 
 .scoreDiv {

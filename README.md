@@ -21,6 +21,7 @@ p to pause the music
 2. Special powerups to change up the fight.
 3. More attacks for the boss.
 4. More Levels, enemies and bosses.
+5. Custom Pixel Artworks
 
 ##### Credits and Acknowledgements:
 Web Dev Junkie for the Space Invader Tutorial: https://github.com/codyseibert/youtube

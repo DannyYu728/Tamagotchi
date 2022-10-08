@@ -110,7 +110,7 @@ class Ship extends Template {
   }
   kill() {
     this.isAlive = false;
-    this.element.style.opacity = 0.2;
+    this.element.style.opacity = 0.5;
     this.element.style.filter = `grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8)`;
     if (life > 0) {
       setTimeout(() => { this.spawn(); }, 1500);
@@ -129,9 +129,6 @@ class Ship extends Template {
       this.removeBoo(boo)
       this.lifeTracker()
       this.kill()
-      if (boos.length <= 0) {
-        clearInterval(booPew)
-      }
     }
     const boss = this.ramming(this);
     if (boss && this.isAlive) {
@@ -182,7 +179,6 @@ class Boss extends Template {
       }, 800)
     }
   }
-
   update() {
     this.attacks({ fireLaser });
     if (this.direction === 'left') {
@@ -195,9 +191,11 @@ class Boss extends Template {
       this.HP -= 1
       if (this.HP === 0) {
         removeBoss(this)
-        winScreen.classList.remove('hidden')
-        win.textContent = `You Win. Your Score is ${score}🐱`;
-        clearInterval(gameLogic)
+        if (bosses.length <= 0) {
+          winScreen.classList.remove('hidden')
+          win.textContent = `You Win. Your Score is ${score}🐱`;
+          // game.stop()
+        }
       }
       this.removeLaser(laser)
     }
@@ -270,7 +268,6 @@ class Boo extends Template {
       this.addtoScore(1)
       if (boos.length <= 0) {
         this.bossSpawn()
-        clearInterval(booPew)
       }
     }
   }
@@ -295,22 +292,19 @@ let life = 3
 const lasers = []
 const boos = []
 const bosses = []
-
 const addtoScore = (amount) => {
   score += amount;
   scoreBox.textContent = `Score: ${score}`;
 }
-
 const lifeTracker = () => {
   life--;
   if (life === 0) {
-    clearInterval(gameLogic)
+    // game.stop()
     gameOver.classList.remove('hidden')
   } else {
     lifeBox.textContent = `Lives: ${life}🐱`;
   }
 }
-
 const fireLaser = ({ x, y, z, isBoo = false, }) => {
   lasers.push(
     new Laser({
@@ -324,17 +318,14 @@ const removeBoo = (boo) => {
   boos.splice(boos.indexOf(boo), 1);
   boo.remove();
 }
-
 const removeBoss = (boss) => {
   bosses.splice(bosses.indexOf(boss), 1);
   boss.remove();
 }
-
 const removeLaser = (laser) => {
   lasers.splice(lasers.indexOf(laser), 1);
   laser.remove();
 }
-
 const collision = (object1, object2) => {
   const rect1 = object1.element.getBoundingClientRect();
   const rect2 = object2.element.getBoundingClientRect();
@@ -344,7 +335,6 @@ const collision = (object1, object2) => {
     rect1.bottom < rect2.top ||
     rect1.top > rect2.bottom)
 }
-
 const kamikaze = (object) => {
   for (let boo of boos) {
     if (collision(object, boo)) {
@@ -369,8 +359,7 @@ const hitDetection = (object) => {
   }
   return null;
 }
-
-let kitty = null
+let kitty;
 const kittySpawn = () => {
   kitty = new Ship({
     lifeTracker,
@@ -394,7 +383,6 @@ let bossSpawn = () => {
   })
   bosses.push(boss)
 }
-
 const chaserSpawn = () => {
   if (bosses.length > 0 || boos.length > 0) {
     const boo = new Boo({
@@ -412,7 +400,6 @@ const chaserSpawn = () => {
     boos.push(boo);
   }
 }
-
 const WitchSpawn = () => {
   for (let i = 0; i < 8; i++) {
     for (let j = 0; j < 3; j++) {
@@ -432,97 +419,139 @@ const WitchSpawn = () => {
     }
   }
 }
-
 const getRandomBoo = (arr) => {
   return arr[parseInt(Math.random() * arr.length)]
 }
-const booLaser = () => {
-  const randomBoo = getRandomBoo(boos);
-  fireLaser({
-    x: randomBoo.x + 25,
-    y: randomBoo.y,
-    z: shells,
-    isBoo: true,
-  });
-};
-
-// kittySpawn()
-// WitchSpawn()
-// setInterval(chaserSpawn, 3000)
-// let booPew = setInterval(booLaser, 1500);
-
+// const booLaser = () => {
+//   const randomBoo = getRandomBoo(boos);
+//   fireLaser({
+//     x: randomBoo.x + 25,
+//     y: randomBoo.y,
+//     z: shells,
+//     isBoo: true,
+//   });
+// };
 //-----------------------------Game Update Logic----------------
-const update = () => {
-  if (keys[`w`] && kitty.y > 0 && kitty.isAlive) {
-    kitty.moveUp()
-  }
-  if (keys[`s`] && kitty.isAlive && kitty.y < window.innerHeight - 80) {
-    kitty.moveDown()
-  }
-  if (keys[`a`] && kitty.isAlive && kitty.x > 0) {
-    kitty.moveLeft()
-  }
-  if (keys[`d`] && kitty.isAlive && kitty.x < window.innerWidth - 80) {
-    kitty.moveRight()
-  }
-  if (keys[` `]) {
-    meow.play();
-    kitty.shoot({
-      fireLaser
-    })
-  }
-  if (keys[`m`]) {
-    bgMusic.play();
-    bgMusic.loop = true;
-  }
-  if (keys[`p`]) {
-    bgMusic.pause();
+function gamingHard() {
+  const booLaser = () => {
+    const randomBoo = getRandomBoo(boos);
+    fireLaser({
+      x: randomBoo.x + 25,
+      y: randomBoo.y,
+      z: shells,
+      isBoo: true,
+    });
+  };
+  const update = () => {
+    if (keys[`w`] && kitty.y > 0 && kitty.isAlive) {
+      kitty.moveUp()
+    }
+    if (keys[`s`] && kitty.isAlive && kitty.y < window.innerHeight - 80) {
+      kitty.moveDown()
+    }
+    if (keys[`a`] && kitty.isAlive && kitty.x > 0) {
+      kitty.moveLeft()
+    }
+    if (keys[`d`] && kitty.isAlive && kitty.x < window.innerWidth - 80) {
+      kitty.moveRight()
+    }
+    if (keys[` `]) {
+      meow.play();
+      kitty.shoot({
+        fireLaser
+      })
+    }
+    if (keys[`m`]) {
+      bgMusic.play();
+      bgMusic.loop = true;
+    }
+    if (keys[`p`]) {
+      bgMusic.pause();
+    }
+    kitty.update()
+    lasers.forEach(laser => {
+      laser.update();
+      if (laser.y < 0) {
+        laser.remove()
+        lasers.splice(lasers.indexOf(laser), 1);
+      }
+    });
+    bosses.forEach((boss) => {
+      boss.update();
+      if (boss.x < 0 + 150) {
+        boss.setDirectionRight()
+      }
+      if (boss.x > window.innerWidth - 300) {
+        boss.setDirectionLeft();
+      }
+    });
+    boos.forEach((boo) => {
+      boo.update();
+      if (boo.x < 0) {
+        boo.setDirectionRight()
+        boo.moveDown()
+      }
+      if (boo.x > window.innerWidth - 100) {
+        boo.setDirectionLeft();
+        boo.moveDown()
+      }
+    });
   }
 
-  kitty.update()
+  let gameLogic;
+  let booPew;
+  let chase
 
-  lasers.forEach(laser => {
-    laser.update();
-    if (laser.y < 0) {
-      laser.remove()
-      lasers.splice(lasers.indexOf(laser), 1);
+  return {
+    start() {
+      chase = setInterval(chaserSpawn, 3000);
+      booPew = setInterval(booLaser, 1500)
+      gameLogic = setInterval(update, 20)
+    },
+    stop() {
+      clearInterval(booPew)
+      clearInterval(gameLogic)
+      clearInterval(chase)
     }
-  });
-
-  bosses.forEach((boss) => {
-    boss.update();
-    if (boss.x < 0 + 150) {
-      boss.setDirectionRight()
-    }
-    if (boss.x > window.innerWidth - 300) {
-      boss.setDirectionLeft();
-    }
-  });
-
-  boos.forEach((boo) => {
-    boo.update();
-    if (boo.x < 0) {
-      boo.setDirectionRight()
-      boo.moveDown()
-    }
-    if (boo.x > window.innerWidth - 100) {
-      boo.setDirectionLeft();
-      boo.moveDown()
-    }
-  });
+  }
 }
 
-// let gameLogic = setInterval(update, 20)
+let game = gamingHard()
+
+const bgAnimate = [
+  { transform: 'translate(0, -3840px)' },
+  { transform: 'translate(0, 0)' }
+];
+const bgTime = {
+  duration: 10000,
+  iterations: Infinity,
+}
 
 startButton.addEventListener('click', () => {
-  startScreen.classList.add('hidden')
-  kittySpawn()
-  WitchSpawn()
-  setInterval(chaserSpawn, 3000)
-  booPew = setInterval(booLaser, 1500);
-  gameLogic = setInterval(update, 20)
+  startScreen.classList.add('hidden');
+  gameModal.classList.remove('hidden');
+  gameModal.animate(bgAnimate, bgTime);
+  gameModal.style.transitionTimingFunction = 'linear';
+  kittySpawn();
+  WitchSpawn();
+  game.start();
 });
-
 resetButton.addEventListener("click", function () {
-  location.reload();
+  boos.forEach(boo => {
+    boo.remove()
+  })
+  kitty.remove()
+  boos.splice(0, boos.length)
+  game.stop()
+  life += 3
+  lifeBox.textContent = `Lives: ${life}🐱`
+  gameOver.classList.add('hidden')
+  startScreen.classList.remove('hidden');
 })
+
+
+
+
+
+
+
