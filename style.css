@@ -7,10 +7,6 @@ html {
   margin: 0;
 }
 
-.hidden {
-  display: none;
-}
-
 .container {
   position: fixed;
   height: 100%;
@@ -29,16 +25,6 @@ html {
   background-repeat: no-repeat;
   background-size: cover;
   animation: screen 0.7s;
-}
-@keyframes screen {
-  0% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1.0);
-    /* transform: rotate(1.0); */
-  }
 }
 
 .winScreen {
@@ -67,6 +53,10 @@ html {
   z-index: 2;
 }
 
+.homeButton {
+  left: 40%
+}
+
 h1 {
   font-family: 'Games', sans-serif;
   text-align: center;
@@ -82,52 +72,7 @@ h1 {
 .win {
   font-size: 100px;
 }
-@keyframes Blazing {
-  0% {
-    text-shadow: 0 3px 20px red, 0 0 20px red,
-      0 0 10px orange,
-      0 0 0 yellow,
-      0 0 5px yellow,
-      -2px -5px 5px yellow,
-      4px -10px 10px yellow;
-  }
 
-  25% {
-    text-shadow: 0 3px 20px red, 0 0 30px red,
-      0 0 20px orange,
-      0 0 5px yellow,
-      -2px -5px 5px yellow,
-      3px -10px 10px yellow,
-      -4px -15px 20px yellow;
-  }
-
-  50% {
-    text-shadow: 0 3px 20px red, 0 0 20px red,
-      0 -5px 10px orange,
-      -2px -5px 5px yellow,
-      3px -10px 10px yellow,
-      -4px -15px 20px yellow,
-      2px -20px 30px rgba(255, 255, 0, 0.5);
-  }
-
-  75% {
-    text-shadow: 0 3px 20px red, 0 0 20px red,
-      0 -5px 10px orange,
-      3px -5px 5px yellow,
-      -4px -10px 10px yellow,
-      2px -20px 30px rgba(255, 255, 0, 0.5),
-      0px -25px 40px rgba(255, 255, 0, 0)
-  }
-
-  100% {
-    text-shadow: 0 3px 20px red, 0 0 20px red,
-      0 0 10px orange,
-      0 0 0 yellow,
-      0 0 5px yellow,
-      -2px -5px 5px yellow,
-      4px -10px 10px yellow;
-  }
-}
 .gameModal {
   position: fixed;
   background: url("./img/5.png") repeat-y;
@@ -198,6 +143,20 @@ h1 {
   animation: smooth 10s;
 }
 
+.hidden {
+  display: none;
+}
+
+@keyframes screen {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.0);
+  }
+}
+
 @keyframes smooth {
   0% {
     transform: scale(0);
@@ -205,5 +164,52 @@ h1 {
 
   50% {
     transform: scale(1.5);
+  }
+}
+
+@keyframes Blazing {
+  0% {
+    text-shadow: 0 3px 20px red, 0 0 20px red,
+      0 0 10px orange,
+      0 0 0 yellow,
+      0 0 5px yellow,
+      -2px -5px 5px yellow,
+      4px -10px 10px yellow;
+  }
+
+  25% {
+    text-shadow: 0 3px 20px red, 0 0 30px red,
+      0 0 20px orange,
+      0 0 5px yellow,
+      -2px -5px 5px yellow,
+      3px -10px 10px yellow,
+      -4px -15px 20px yellow;
+  }
+
+  50% {
+    text-shadow: 0 3px 20px red, 0 0 20px red,
+      0 -5px 10px orange,
+      -2px -5px 5px yellow,
+      3px -10px 10px yellow,
+      -4px -15px 20px yellow,
+      2px -20px 30px rgba(255, 255, 0, 0.5);
+  }
+
+  75% {
+    text-shadow: 0 3px 20px red, 0 0 20px red,
+      0 -5px 10px orange,
+      3px -5px 5px yellow,
+      -4px -10px 10px yellow,
+      2px -20px 30px rgba(255, 255, 0, 0.5),
+      0px -25px 40px rgba(255, 255, 0, 0)
+  }
+
+  100% {
+    text-shadow: 0 3px 20px red, 0 0 20px red,
+      0 0 10px orange,
+      0 0 0 yellow,
+      0 0 5px yellow,
+      -2px -5px 5px yellow,
+      4px -10px 10px yellow;
   }
 }
