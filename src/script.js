@@ -194,7 +194,6 @@ class Boss extends Template {
         if (bosses.length <= 0) {
           winScreen.classList.remove('hidden')
           win.textContent = `You Win. Your Score is ${score}🐱`;
-          // game.stop()
         }
       }
       this.removeLaser(laser)
@@ -299,7 +298,6 @@ const addtoScore = (amount) => {
 const lifeTracker = () => {
   life--;
   if (life === 0) {
-    // game.stop()
     gameOver.classList.remove('hidden')
   } else {
     lifeBox.textContent = `Lives: ${life}🐱`;
@@ -422,17 +420,8 @@ const WitchSpawn = () => {
 const getRandomBoo = (arr) => {
   return arr[parseInt(Math.random() * arr.length)]
 }
-// const booLaser = () => {
-//   const randomBoo = getRandomBoo(boos);
-//   fireLaser({
-//     x: randomBoo.x + 25,
-//     y: randomBoo.y,
-//     z: shells,
-//     isBoo: true,
-//   });
-// };
 //-----------------------------Game Update Logic----------------
-function gamingHard() {
+let gamingHard = () => {
   const booLaser = () => {
     const randomBoo = getRandomBoo(boos);
     fireLaser({
@@ -515,23 +504,34 @@ function gamingHard() {
     }
   }
 }
-
 let game = gamingHard()
 
-const bgAnimate = [
-  { transform: 'translate(0, -3840px)' },
-  { transform: 'translate(0, 0)' }
-];
-const bgTime = {
-  duration: 10000,
-  iterations: Infinity,
+let bgAnimate = () => {
+  const animation = [
+    { transform: 'translate(0, -3840px)' },
+    { transform: 'translate(0, 0)' }
+  ];
+  const time = {
+    duration: 10000,
+    iterations: Infinity,
+  }
+  let animate;
+  return {
+    play() {
+      animate = gameModal.animate(animation, time);
+    },
+    stop() {
+      animate.cancel()
+    }
+  }
 }
+let bgAnimation = bgAnimate()
 
 startButton.addEventListener('click', () => {
   startScreen.classList.add('hidden');
   gameModal.classList.remove('hidden');
-  gameModal.animate(bgAnimate, bgTime);
   gameModal.style.transitionTimingFunction = 'linear';
+  bgAnimation.play()
   kittySpawn();
   WitchSpawn();
   game.start();
@@ -545,6 +545,7 @@ resetButton.addEventListener("click", function () {
   game.stop()
   life += 3
   lifeBox.textContent = `Lives: ${life}🐱`
+  bgAnimation.stop()
   gameOver.classList.add('hidden')
   startScreen.classList.remove('hidden');
 })
