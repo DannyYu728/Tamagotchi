@@ -17,9 +17,7 @@ html {
   overflow: hidden;
 }
 
-.gameOver,
-.winScreen,
-.startScreen {
+.screen {
   position: fixed;
   height: 100%;
   width: 100%;
@@ -148,9 +146,23 @@ html {
   animation: smooth 10s;
 }
 
-header, footer {
+header,
+footer {
   width: 100%;
-  
+  font-family: 'Games', sans-serif;
+}
+
+main {
+  width: 100%;
+  height: 88.3%;
+}
+
+.backgrounds {
+  width: 100%;
+  height: 100%;
+  background: url("./img/backg.jpeg");
+  background-position: center;
+  background-size: 100% 100%;
 }
 
 .stats {
@@ -165,6 +177,60 @@ header, footer {
   width: 100%;
   justify-content: space-around;
   background-color: grey;
+}
+
+.tamaButton {
+  font-size: 25px;
+  text-shadow: 1px 1px pink, -1px -1px maroon;
+  line-height: 1.5em;
+  text-align: center;
+  display: inline-block;
+  width: 4em;
+  -webkit-border-radius: .75em;
+  -moz-border-radius: .75em;
+  -o-border-radius: .75em;
+  border-radius: .75em;
+  background-color: red;
+  -webkit-box-shadow: 0 .2em maroon;
+  -moz-box-shadow: 0 .2em maroon;
+  -o-box-shadow: 0 .2em maroon;
+  box-shadow: 0 .2em maroon;
+  color: red;
+  margin: 5px;
+  background-color: red;
+  background-image: -o-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+  background-image: -moz-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+  background-image: -webkit-linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+  background-image: linear-gradient(left top, pink 3%, red 22%, maroon 99%);
+  cursor: pointer;
+}
+
+.donut {
+  position: fixed;
+  top: 75%;
+  left: 25%;
+  width: 80px;
+  cursor: pointer;
+  filter: drop-shadow(-10px 35px 15px black);
+}
+
+.house {
+  position: fixed;
+  top: 55%;
+  right: 20%;
+  width: 300px;
+  cursor: pointer;
+  filter: drop-shadow(50px 150px 40px black);
+}
+
+.pusheen {
+  position: fixed;
+  width: 100px;
+  top: 65%;
+  right: 50%;
+  filter: drop-shadow(-5px 25px 10px black);
+  transition: top 2s, left 2s;
+  transition-timing-function: linear;
 }
 
 .hidden {

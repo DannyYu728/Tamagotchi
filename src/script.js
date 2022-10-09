@@ -6,6 +6,8 @@ const lakitu = "./img/witch.gif"
 const cutie = "./img/ghost2.gif"
 const header = document.querySelector('header')
 const main = document.querySelector('main')
+const donut = document.querySelector('.donut')
+const pusheen = document.querySelector('.pusheen')
 const footer = document.querySelector('footer')
 const container = document.querySelector(".container")
 const gameModal = document.querySelector(".gameModal")
@@ -125,7 +127,6 @@ class Ship extends Template {
     if (life > 0) {
       setTimeout(() => { this.spawn(); }, 1500);
     }
-
   }
   update() {
     const laser = this.hitDetection(this);
@@ -202,7 +203,10 @@ class Boss extends Template {
       if (this.HP === 0) {
         removeBoss(this)
         if (bosses.length <= 0) {
-          apple += 1
+          if (apple < 5) {
+            apple += 1
+            apples.innerText = `Apples: ${apple}`
+          }
           winScreen.classList.remove('hidden')
           win.textContent = `You Win. Your Score is ${score}🐱`;
         }
@@ -309,6 +313,10 @@ const addtoScore = (amount) => {
 const lifeTracker = () => {
   life--;
   if (life === 0) {
+    if (healthMeter > 0) {
+      healthMeter -= 25
+      healthBar.innerText = `Health: ${healthMeter}`
+    }
     gameOver.classList.remove('hidden')
   } else {
     lifeBox.textContent = `Lives: ${life}🐱`;
@@ -497,11 +505,9 @@ let gamingHard = () => {
       }
     });
   }
-
   let gameLogic;
   let booPew;
   let chase
-
   return {
     start() {
       chase = setInterval(chaserSpawn, 3000);
@@ -516,7 +522,6 @@ let gamingHard = () => {
   }
 }
 let game = gamingHard()
-
 let bgAnimate = () => {
   const animation = [
     { transform: 'translate(0, -3840px)' },
@@ -537,7 +542,6 @@ let bgAnimate = () => {
   }
 }
 let bgAnimation = bgAnimate()
-
 startButton.addEventListener('click', () => {
   startScreen.classList.add('hidden');
   scoreDiv.classList.remove('hidden');
@@ -548,13 +552,16 @@ startButton.addEventListener('click', () => {
   WitchSpawn();
   game.start();
 });
-
 homeButton.addEventListener('click', function () {
   boos.forEach(boo => {
     boo.remove()
   })
+  lasers.forEach(laser => {
+    laser.remove()
+  })
   kitty.remove()
   boos.splice(0, boos.length)
+  lasers.splice(0, lasers.length)
   game.stop()
   life = 3
   lifeBox.textContent = `Lives: ${life}🐱`
@@ -562,15 +569,17 @@ homeButton.addEventListener('click', function () {
   scoreDiv.classList.add('hidden')
   container.classList.add('hidden')
   winScreen.classList.add('hidden')
-  startScreen.classList.remove('hidden')
 })
-
 resetButton.addEventListener("click", function () {
   boos.forEach(boo => {
     boo.remove()
   })
+  lasers.forEach(laser => {
+    laser.remove()
+  })
   kitty.remove()
   boos.splice(0, boos.length)
+  lasers.splice(0, lasers.length)
   game.stop()
   life += 3
   lifeBox.textContent = `Lives: ${life}🐱`
@@ -578,11 +587,8 @@ resetButton.addEventListener("click", function () {
   scoreDiv.classList.add('hidden')
   container.classList.add('hidden');
   gameOver.classList.add('hidden')
-  startScreen.classList.remove('hidden');
 })
-//Tamagotchi-------
-
-
+//Tamagotchi Pet-------
 let headTemplate = `
 <div class ="stats">
 <h3 class="health">Health: ${healthMeter}</h3>
@@ -595,7 +601,6 @@ const healthBar = document.querySelector(".health")
 const hungerBar = document.querySelector(".hunger")
 const apples = document.querySelector(".apple")
 const happyBar = document.querySelector(".happy")
-
 let footTemplate = `
 <div class ="doStuff">
 <div class="sleep tamaButton">Sleep</div>
@@ -606,7 +611,9 @@ footer.insertAdjacentHTML("beforeend", footTemplate)
 const sleeping = document.querySelector(".sleep")
 const eating = document.querySelector(".eat")
 const playing = document.querySelector(".play")
-
+donut.addEventListener('click', () => {
+  startScreen.classList.remove("hidden")
+})
 sleeping.addEventListener('click', () => {
   if (healthMeter >= 100) {
     console.log("Not Tired!")
@@ -617,7 +624,6 @@ sleeping.addEventListener('click', () => {
     console.log("Cant sleep, Need more Food and not happy!")
   }
 })
-
 eating.addEventListener('click', () => {
   if (hungerMeter >= 100) {
     console.log("Not Hungry!")
@@ -629,7 +635,6 @@ eating.addEventListener('click', () => {
     console.log("No more Food")
   }
 })
-
 playing.addEventListener('click', () => {
   if (happyMeter >= 100) {
     console.log("Dont want to play anymore!")
@@ -637,23 +642,45 @@ playing.addEventListener('click', () => {
     happyMeter += 10
   }
 })
-
 let decay = () => {
-  if (healthMeter > 0) {
-    healthMeter -= 1
-    healthBar.innerText = `Health: ${healthMeter}`
-  }
   if (hungerMeter > 0) {
-    hungerMeter -= 1
+    hungerMeter -= 5
     hungerBar.innerText = `Hunger: ${hungerMeter}`
   }
   if (happyMeter > 0) {
-    happyMeter -= 1
+    happyMeter -= 2
     happyBar.innerText = `Happiness: ${happyMeter}`
   }
 }
-
-// setInterval(decay, 10000)
+setInterval(decay, 5000)
+main.addEventListener("click", getClickPosition, false);
+function getClickPosition(e) {
+    let parentPosition = getPosition(e.currentTarget);
+    let xPosition = e.clientX - parentPosition.x - (pusheen.clientWidth / 2);
+    let yPosition = e.clientY - parentPosition.y - (pusheen.clientHeight / 2);
+    pusheen.style.left = xPosition + "px";
+    pusheen.style.top = yPosition + "px";
+}
+function getPosition(el) {
+  let xPos = 0;
+  let yPos = 0;
+  while (el) {
+    if (el.tagName == "BODY") {
+      let xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+      let yScroll = el.scrollTop || document.documentElement.scrollTop;
+      xPos += (el.offsetLeft - xScroll + el.clientLeft);
+      yPos += (el.offsetTop - yScroll + el.clientTop);
+    } else {
+      xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+      yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+    }
+    el = el.offsetParent;
+  }
+  return {
+    x: xPos,
+    y: yPos
+  };
+}
 
 
 

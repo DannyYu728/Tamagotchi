@@ -1,4 +1,4 @@
-# Tamagotchi & Nyan Cat Shooter
+# Virtual Pet & Nyan Cat Shooter
 
 ## Description:
 You are Nyan Cat in search of the ultimate SpaceTart. One day you came across a rumor that an alienship has arrive on earth carrying the most delicious tart. Now you must equip your handy dandy donut ship and battle across time and space to have the ultimate bite!
@@ -22,9 +22,13 @@ p to pause the music
 3. More attacks for the boss.
 4. More Levels, enemies and bosses.
 5. Custom Pixel Artworks
+6. Tamagotchi is still in Alpha, it needs more work.
+7. Add option menu to change variables
 
 ##### Credits and Acknowledgements:
 Web Dev Junkie for the Space Invader Tutorial: https://github.com/codyseibert/youtube
+
+Kirupa for the click to move: https://www.kirupa.com/snippets/move_element_to_click_position.htm
 
 PRGuitarMan for everthing Nyan Cat: https://www.nyan.cat/
 
@@ -44,3 +48,5 @@ Darkness's hochgeladene for the WinSreen: https://wall.alphacoders.com/profile.p
 Predvkill for the gameover Screen: https://www.deviantart.com/predvkill/
 
 Vladimir Nikolic for the Font: https://www.cdnfonts.com/games.font
+
+DanielWeiner for the Buttons: https://codepen.io/DanielWeiner/pen/naybVd
