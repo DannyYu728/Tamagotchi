@@ -4,6 +4,10 @@ const sheep = "./img/rainSheep.gif"
 const shells = "./img/pump2.gif"
 const lakitu = "./img/witch.gif"
 const cutie = "./img/ghost2.gif"
+const header = document.querySelector('header')
+const main = document.querySelector('main')
+const footer = document.querySelector('footer')
+const container = document.querySelector(".container")
 const gameModal = document.querySelector(".gameModal")
 const gameOver = document.querySelector(".gameOver")
 const winScreen = document.querySelector(".winScreen")
@@ -12,8 +16,13 @@ const startButton = document.querySelector(".startButton")
 const homeButton = document.querySelector(".homeButton")
 const resetButton = document.querySelector(".resetButton")
 const win = document.querySelector(".win")
+const scoreDiv = document.querySelector(".scoreDiv")
 const scoreBox = document.querySelector(".score")
 const lifeBox = document.querySelector(".life")
+let healthMeter = 100
+let hungerMeter = 100
+let happyMeter = 100
+let apple = 5
 //-----------------Keys-----------------------------------------
 const keys = {
   p: false,
@@ -193,6 +202,7 @@ class Boss extends Template {
       if (this.HP === 0) {
         removeBoss(this)
         if (bosses.length <= 0) {
+          apple += 1
           winScreen.classList.remove('hidden')
           win.textContent = `You Win. Your Score is ${score}🐱`;
         }
@@ -530,7 +540,8 @@ let bgAnimation = bgAnimate()
 
 startButton.addEventListener('click', () => {
   startScreen.classList.add('hidden');
-  gameModal.classList.remove('hidden');
+  scoreDiv.classList.remove('hidden');
+  container.classList.remove('hidden');
   gameModal.style.transitionTimingFunction = 'linear';
   bgAnimation.play()
   kittySpawn();
@@ -548,7 +559,8 @@ homeButton.addEventListener('click', function () {
   life = 3
   lifeBox.textContent = `Lives: ${life}🐱`
   bgAnimation.stop()
-  gameModal.classList.add('hidden')
+  scoreDiv.classList.add('hidden')
+  container.classList.add('hidden')
   winScreen.classList.add('hidden')
   startScreen.classList.remove('hidden')
 })
@@ -563,13 +575,85 @@ resetButton.addEventListener("click", function () {
   life += 3
   lifeBox.textContent = `Lives: ${life}🐱`
   bgAnimation.stop()
-  gameModal.classList.add('hidden');
+  scoreDiv.classList.add('hidden')
+  container.classList.add('hidden');
   gameOver.classList.add('hidden')
   startScreen.classList.remove('hidden');
 })
+//Tamagotchi-------
 
 
+let headTemplate = `
+<div class ="stats">
+<h3 class="health">Health: ${healthMeter}</h3>
+<h3 class="hunger">Hunger: ${hungerMeter}</h3>
+<h3 class="apple">Apples: ${apple}</h3>
+<h3 class="happy">Happiness: ${happyMeter}</h3>
+</div>`
+header.insertAdjacentHTML("beforeend", headTemplate)
+const healthBar = document.querySelector(".health")
+const hungerBar = document.querySelector(".hunger")
+const apples = document.querySelector(".apple")
+const happyBar = document.querySelector(".happy")
 
+let footTemplate = `
+<div class ="doStuff">
+<div class="sleep tamaButton">Sleep</div>
+<div class="eat tamaButton">Eat</div>
+<div class="play tamaButton">Play</dv>
+</div>`
+footer.insertAdjacentHTML("beforeend", footTemplate)
+const sleeping = document.querySelector(".sleep")
+const eating = document.querySelector(".eat")
+const playing = document.querySelector(".play")
+
+sleeping.addEventListener('click', () => {
+  if (healthMeter >= 100) {
+    console.log("Not Tired!")
+  } else if (healthMeter < 100 && hungerMeter >= 50 && happyMeter >= 50) {
+    healthMeter += 10
+    healthBar.innerText = `Health: ${healthMeter}`
+  } else {
+    console.log("Cant sleep, Need more Food and not happy!")
+  }
+})
+
+eating.addEventListener('click', () => {
+  if (hungerMeter >= 100) {
+    console.log("Not Hungry!")
+  } else if (apple > 0) {
+    hungerMeter += 10
+    apple -= 1
+    apples.innerText = `Apples: ${apple}`
+  } else {
+    console.log("No more Food")
+  }
+})
+
+playing.addEventListener('click', () => {
+  if (happyMeter >= 100) {
+    console.log("Dont want to play anymore!")
+  } else {
+    happyMeter += 10
+  }
+})
+
+let decay = () => {
+  if (healthMeter > 0) {
+    healthMeter -= 1
+    healthBar.innerText = `Health: ${healthMeter}`
+  }
+  if (hungerMeter > 0) {
+    hungerMeter -= 1
+    hungerBar.innerText = `Hunger: ${hungerMeter}`
+  }
+  if (happyMeter > 0) {
+    happyMeter -= 1
+    happyBar.innerText = `Happiness: ${happyMeter}`
+  }
+}
+
+// setInterval(decay, 10000)
 
 
 
