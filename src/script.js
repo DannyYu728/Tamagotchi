@@ -628,7 +628,7 @@ eating.addEventListener('click', () => {
   if (hungerMeter >= 100) {
     console.log("Not Hungry!")
   } else if (apple > 0) {
-    hungerMeter += 10
+    hungerMeter += 50
     apple -= 1
     apples.innerText = `Apples: ${apple}`
   } else {
@@ -639,7 +639,7 @@ playing.addEventListener('click', () => {
   if (happyMeter >= 100) {
     console.log("Dont want to play anymore!")
   } else {
-    happyMeter += 10
+    happyMeter += 20
   }
 })
 let decay = () => {
