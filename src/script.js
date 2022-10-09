@@ -7,7 +7,8 @@ const cutie = "./img/ghost2.gif"
 const header = document.querySelector('header')
 const main = document.querySelector('main')
 const donut = document.querySelector('.donut')
-const pusheen = document.querySelector('.pusheen')
+const pusheen = document.querySelector('.pushBox')
+const speechBox = document.querySelector('.speechBox')
 const footer = document.querySelector('footer')
 const container = document.querySelector(".container")
 const gameModal = document.querySelector(".gameModal")
@@ -15,8 +16,7 @@ const gameOver = document.querySelector(".gameOver")
 const winScreen = document.querySelector(".winScreen")
 const startScreen = document.querySelector(".startScreen")
 const startButton = document.querySelector(".startButton")
-const homeButton = document.querySelector(".homeButton")
-const resetButton = document.querySelector(".resetButton")
+const buttons = document.querySelectorAll(".buttons")
 const win = document.querySelector(".win")
 const scoreDiv = document.querySelector(".scoreDiv")
 const scoreBox = document.querySelector(".score")
@@ -167,7 +167,7 @@ class Boss extends Template {
     this.direction = 'left';
     this.setX(x);
     this.setY(y);
-    this.HP = 12;
+    this.HP = 10;
     this.fireRate = true
   }
   setDirectionLeft() {
@@ -552,41 +552,30 @@ startButton.addEventListener('click', () => {
   WitchSpawn();
   game.start();
 });
-homeButton.addEventListener('click', function () {
-  boos.forEach(boo => {
-    boo.remove()
+buttons.forEach((button) => {
+  button.addEventListener('click', function () {
+    boos.forEach(boo => {
+      boo.remove()
+    })
+    bosses.forEach(boss => {
+      boss.remove()
+    })
+    lasers.forEach(laser => {
+      laser.remove()
+    })
+    kitty.remove()
+    boos.splice(0, boos.length)
+    bosses.splice(0, bosses.length)
+    lasers.splice(0, lasers.length)
+    game.stop()
+    life = 3
+    lifeBox.textContent = `Lives: ${life}🐱`
+    bgAnimation.stop()
+    scoreDiv.classList.add('hidden')
+    container.classList.add('hidden')
+    winScreen.classList.add('hidden')
+    gameOver.classList.add('hidden')
   })
-  lasers.forEach(laser => {
-    laser.remove()
-  })
-  kitty.remove()
-  boos.splice(0, boos.length)
-  lasers.splice(0, lasers.length)
-  game.stop()
-  life = 3
-  lifeBox.textContent = `Lives: ${life}🐱`
-  bgAnimation.stop()
-  scoreDiv.classList.add('hidden')
-  container.classList.add('hidden')
-  winScreen.classList.add('hidden')
-})
-resetButton.addEventListener("click", function () {
-  boos.forEach(boo => {
-    boo.remove()
-  })
-  lasers.forEach(laser => {
-    laser.remove()
-  })
-  kitty.remove()
-  boos.splice(0, boos.length)
-  lasers.splice(0, lasers.length)
-  game.stop()
-  life += 3
-  lifeBox.textContent = `Lives: ${life}🐱`
-  bgAnimation.stop()
-  scoreDiv.classList.add('hidden')
-  container.classList.add('hidden');
-  gameOver.classList.add('hidden')
 })
 //Tamagotchi Pet-------
 let headTemplate = `
@@ -616,28 +605,39 @@ donut.addEventListener('click', () => {
 })
 sleeping.addEventListener('click', () => {
   if (healthMeter >= 100) {
-    console.log("Not Tired!")
+    speechBox.classList.remove('hidden')
+    speechBox.innerText = "Not Tired!"
+    setTimeout(() => { speechBox.classList.add('hidden') }, 2000);
   } else if (healthMeter < 100 && hungerMeter >= 50 && happyMeter >= 50) {
     healthMeter += 10
     healthBar.innerText = `Health: ${healthMeter}`
   } else {
-    console.log("Cant sleep, Need more Food and not happy!")
+    speechBox.classList.remove('hidden')
+    speechBox.innerText = "Cant sleep, Need more Food and not happy!"
+    setTimeout(() => { speechBox.classList.add('hidden') }, 2000);
   }
 })
 eating.addEventListener('click', () => {
   if (hungerMeter >= 100) {
-    console.log("Not Hungry!")
+    speechBox.classList.remove('hidden')
+    speechBox.innerText = "Not Hungry!"
+    setTimeout(() => { speechBox.classList.add('hidden') }, 2000);
   } else if (apple > 0) {
     hungerMeter += 50
+    hungerBar.innerText = `Hunger: ${hungerMeter}`
     apple -= 1
     apples.innerText = `Apples: ${apple}`
   } else {
-    console.log("No more Food")
+    speechBox.classList.remove('hidden')
+    speechBox.innerText = "No more Food"
+    setTimeout(() => { speechBox.classList.add('hidden') }, 2000);
   }
 })
 playing.addEventListener('click', () => {
   if (happyMeter >= 100) {
-    console.log("Dont want to play anymore!")
+    speechBox.classList.remove('hidden')
+    speechBox.innerText = "Dont want to play anymore!"
+    setTimeout(() => { speechBox.classList.add('hidden') }, 2000);
   } else {
     happyMeter += 20
   }
@@ -655,11 +655,18 @@ let decay = () => {
 setInterval(decay, 5000)
 main.addEventListener("click", getClickPosition, false);
 function getClickPosition(e) {
-    let parentPosition = getPosition(e.currentTarget);
-    let xPosition = e.clientX - parentPosition.x - (pusheen.clientWidth / 2);
-    let yPosition = e.clientY - parentPosition.y - (pusheen.clientHeight / 2);
-    pusheen.style.left = xPosition + "px";
-    pusheen.style.top = yPosition + "px";
+  let containerPos = getPosition(e.currentTarget);
+  let xPosition = e.clientX - containerPos.x - (pusheen.clientWidth / 2);
+  let yPosition = e.clientY - containerPos.y - (pusheen.clientHeight / 2);
+  pusheen.style.left = xPosition + "px";
+  pusheen.style.top = yPosition + "px";
+  if (e.clientX > pusheen.offsetLeft) {
+    pusheen.style.transform = 'scaleX(-1)';
+    speechBox.style.transform = 'scaleX(-1)';
+  } else {
+    pusheen.style.transform = 'none';
+    speechBox.style.transform = 'none';
+  }
 }
 function getPosition(el) {
   let xPos = 0;
