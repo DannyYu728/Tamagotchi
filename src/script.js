@@ -640,6 +640,7 @@ playing.addEventListener('click', () => {
     setTimeout(() => { speechBox.classList.add('hidden') }, 2000);
   } else {
     happyMeter += 20
+    happyBar.innerText = `Happiness: ${happyMeter}`
   }
 })
 let decay = () => {
