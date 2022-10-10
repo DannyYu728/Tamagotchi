@@ -4,10 +4,10 @@
 You are Nyan Cat in search of the ultimate SpaceTart. One day you came across a rumor that an alienship has arrive on earth carrying the most delicious tart. Now you must equip your handy dandy donut ship and battle across time and space to have the ultimate bite!
 
 ### Controls:
-WASD to move up, left, down, Right
-Spacebar to shoot
-m to play the music
-p to pause the music
+1. WASD to move up, left, down, Right
+2. Spacebar to shoot
+3. m to play the music
+4. p to pause the music
 
 #### Features:
 1. Jam to the Nyan Cat song while you battle for the ultimate spacetart.
@@ -30,9 +30,9 @@ Web Dev Junkie for the Space Invader Tutorial: https://github.com/codyseibert/yo
 
 Kirupa for the click to move: https://www.kirupa.com/snippets/move_element_to_click_position.htm
 
-PRGuitarMan for everthing Nyan Cat: https://www.nyan.cat/
+PRGuitarMan for everything Nyan Cat: https://www.nyan.cat/
 
-For the Artworks:
+###### For the Artworks:
 Ohyesthekiki for the Sheep: https://tenor.com/users/ohyesthekiki
 
 Stanley for the Pumpkin: https://totallytransparent.tumblr.com/
