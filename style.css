@@ -10,6 +10,16 @@ html {
   margin: 0;
 }
 
+.click-Me {
+  position: fixed;
+  top: 75%;
+  left: 21%;
+  width: 80px;
+  cursor: pointer;
+text-shadow: 1px 1px 5px black;
+  color: white;
+  width: 20rem;
+}
 .container {
   position: fixed;
   height: 100%;
